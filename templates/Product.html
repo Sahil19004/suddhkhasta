@@ -1,0 +1,1034 @@
+<!doctype html>
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>SUDDKHASTA | Our Collections</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="../static/css/style.css" as="style">
+  <link rel="preload" href="../static/js/script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+
+  <style>
+    
+    .add-to-cart-btn, .go-to-cart-btn {
+   padding: 0 2rem;
+    height: 40px;
+    border-radius: 50px;
+    font-weight: 600;
+    display: flex
+;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-btn:hover, .go-to-cart-btn:hover {
+  background:var(--primary);
+}
+
+.go-to-cart-btn {
+    background-color: var(--primary);
+    color: white;
+    border: 2px solid var(--primary);
+}
+
+
+.rating-bar span:first-child {
+    min-width: 60px;
+    font-size: 0.9rem;
+}
+
+.bar-container {
+    flex: 1;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    background: #ffc107;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.rating-bar span:last-child {
+    min-width: 40px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Reviews List */
+.reviews-list {
+    margin: 2rem 0;
+}
+
+.reviews-list h3 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.review-item {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: white;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reviewer-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.review-rating {
+    color: #ffc107;
+}
+
+.review-rating i {
+    font-size: 0.9rem;
+}
+
+.review-date {
+    color: #666;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.review-text {
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Review Form */
+.review-form {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.review-form h3 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.rating-input {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.rating-input i {
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.rating-input i:hover,
+.rating-input i.selected {
+    color: #ffc107;
+}
+
+.rating-input i.fa-solid {
+    color: #ffc107;
+}
+
+#review-name {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#review-text {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 100px;
+}
+
+#review-name:focus,
+#review-text:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.submit-review {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-review:hover {
+    background: #0056b3;
+}
+
+.submit-review:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .review-summary {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .review-date {
+        margin-left: 0;
+    }
+}
+  </style>
+</head>
+<body>
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-cookie">
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <!-- Navigation Links -->
+     <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="#colection" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <!-- <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li> -->
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <!-- <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li> -->
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <!-- <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li> -->
+      </ul>
+
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart/" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Product Detail Section -->
+   
+  <main class="product-detail">
+    <div class="product-container">
+      <!-- Product Gallery -->
+      <div class="product-gallery">
+        <div class="main-image">
+          <img src="{{product.image1.url}}" alt="Classic Collection" loading="lazy">
+        </div>
+        <div class="thumbnail-container">
+          <div class="thumbnail active" data-image="{{product.image2.url}}">
+            <img src="{{product.image2.url}}" alt="Classic Collection" loading="lazy">
+          </div>
+          <div class="thumbnail"   data-image="{{product.image3.url}}">
+            <img src="{{product.image3.url}}" alt="Classic Collection" loading="lazy">
+          </div>
+          <div class="thumbnail" data-image="{{product.image1.url}}">
+            <img src="{{product.image1.url}}" alt="Classic Collection" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <h1 class="product-title">{{product.name}}</h1>
+        <div class="product-meta">
+          <div class="rating">
+            <div class="stars">
+                {% for i in "12345" %}
+          {% if forloop.counter <= average_rating|floatformat:0|add:0 %}
+            <i class="fa-solid fa-star"></i>
+          {% elif forloop.counter == average_rating|floatformat:0|add:1 and average_rating|floatformat:1|slice:"-1" != "0" %}
+            <i class="fa-solid fa-star-half-stroke"></i>
+          {% else %}
+            <i class="fa-regular fa-star"></i>
+          {% endif %}
+        {% endfor %}
+            </div>
+            <span class="review-count">({{ total_reviews }} reviews)</span>
+          </div>
+        
+        </div>
+
+        <div class="price-container">
+          <span class="current-price">₹{{product.price}}</span>
+          <span class="original-price">₹{{product.mrp}}</span>
+          <span class="discount">{{product.discount}}% OFF</span>
+        </div>
+
+        <div class="product-description">
+<p>{{product.description}}</p>       
+   <ul class="features">
+  {% for line in product.description2.splitlines %}
+    <li><i class="fa-solid fa-check"></i> {{ line }}</li>
+  {% endfor %}
+</ul>
+        </div>
+
+<div class="product-actions">
+  {% if product_in_cart %}
+    <!-- Show "Go to Cart" when product is already in cart -->
+    <a href="{% url 'cart_detail' %}" class="go-to-cart-btn">
+      <i class="fa-solid fa-shopping-cart"></i> Go to Cart
+    </a>
+  {% else %}
+    <!-- Show quantity selector and "Add to Cart" when product is not in cart -->
+    <div class="quantity-selector">
+      <button type="button" class="quantity-btn minus">
+        <i class="fa-solid fa-minus"></i>
+      </button>
+      <input type="number" value="1" min="1" class="quantity-input" id="product-quantity">
+      <button type="button" class="quantity-btn plus">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </div>
+    <button class="add-to-cart-btn" data-product-id="{{ product.id }}">
+      <i class="fa-solid fa-cart-plus"></i> Add to Cart
+    </button>
+  {% endif %}
+  
+  <button class="buy-now-btn">
+    <i class="fa-solid fa-bolt"></i> Buy Now
+  </button>
+</div>
+
+
+        <div class="delivery-info">
+          <div class="delivery-option">
+            <i class="fa-solid fa-truck"></i>
+            <div>
+              <h4>Free Delivery</h4>
+              <p>Get free delivery on orders above ₹500</p>
+            </div>
+          </div>
+          <div class="delivery-option">
+            <i class="fa-solid fa-undo"></i>
+            <div>
+              <h4>Easy Returns</h4>
+              <p>7-day return policy</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="share-options">
+          <span>Share:</span>
+          <a href="#"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- you may also like section  -->
+     <section class="related-products">
+      <h2 class="section-title">You May Also Like</h2>
+       <div class="product-carousel">
+      <!-- Product 1 -->
+    {% for i in products %}
+      <div class="product-card">
+        <div class="product-badge">{{i.badge}}</div>
+      <a href="/product-detail/{{i.id}}" style="cursor: pointer;">  <div class="product-image">
+          <img src="{{i.image1.url}}" alt="Salted Caramel Cookie" loading="lazy">
+        </div>
+        </a>
+        <div class="product-content">
+          <h3 class="product-name">{{i.name}}</h3>
+          <p class="product-desc">{{i.description|truncatechars:100}} <a href="" style="text-decoration: underline;color:  var(--primary);">read more</a></p>
+
+          <div class="product-rating">
+            <div class="stars">
+             {% for i in "12345" %}
+          {% if forloop.counter <= average_rating|floatformat:0|add:0 %}
+            <i class="fa-solid fa-star"></i>
+          {% elif forloop.counter == average_rating|floatformat:0|add:1 and average_rating|floatformat:1|slice:"-1" != "0" %}
+            <i class="fa-solid fa-star-half-stroke"></i>
+          {% else %}
+            <i class="fa-regular fa-star"></i>
+          {% endif %}
+        {% endfor %}</i>
+            </div>
+            <span class="rating-count">({{ total_reviews }} reviews)</span>
+          </div>
+          <div class="product-price">
+            <span class="current-price">₹{{i.mrp}}</span>
+            <span class="original-price">₹{{i.price}}</span>
+          </div>
+          <a href="/product-detail/{{i.id}}" class="add-to-cart" style="cursor:pointer;">
+            <i class="fa-solid fa-plus"></i> Add to Cart
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+      
+      <!-- Product 2 -->
+   
+    </div>
+    </section>
+    <!-- Product Tabs -->
+    <div class="product-tabs">
+      <div class="tabs-header">
+        <!-- <button class="tab-btn active" data-tab="description">Description</button>
+        <button class="tab-btn" data-tab="ingredients">Ingredients</button> -->
+        <button class="tab-btn active" data-tab="reviews">Reviews</button>
+        <button class="tab-btn" data-tab="shipping">Shipping</button>
+      </div>
+      <div class="tabs-content">
+        <!-- <div class="tab-pane active" id="description">
+          <h3>Product Story</h3>
+          <p>Our salted caramel cookies are the result of years of perfecting the balance between sweet and salty. Inspired by traditional French caramel recipes, we've created a cookie that delivers a sophisticated flavor profile while maintaining the comforting warmth of homemade baking.</p>
+          <h3>Details</h3>
+          <ul>
+            <li>Weight: 60g per cookie</li>
+            <li>Contains: 12 cookies per box</li>
+            <li>Shelf life: 14 days</li>
+            <li>Allergens: Contains wheat, milk, eggs</li>
+          </ul>
+        </div>
+        <div class="tab-pane" id="ingredients">
+          <h3>What's Inside</h3>
+          <p>Organic wheat flour, European butter (82% fat), brown sugar, caramel (sugar, glucose syrup, condensed milk, butter, salt), free-range eggs, vanilla extract, Himalayan pink salt, baking powder.</p>
+          <h3>Nutritional Info (per 100g)</h3>
+          <ul>
+            <li>Energy: 480kcal</li>
+            <li>Fat: 24g</li>
+            <li>Carbohydrates: 60g</li>
+            <li>Protein: 6g</li>
+          </ul>
+        </div> -->
+      <!-- Updated reviews tab with dynamic data from Django -->
+<!-- Updated reviews tab with dynamic data from Django -->
+<!-- Updated reviews tab with dynamic data from Django -->
+<div class="tab-pane active" id="reviews">
+  <div class="review-summary">
+    <div class="average-rating">
+      <div class="rating-value">{{ average_rating }}</div>
+      <div class="stars">
+        {% for i in "12345" %}
+          {% if forloop.counter <= average_rating|floatformat:0|add:0 %}
+            <i class="fa-solid fa-star"></i>
+          {% elif forloop.counter == average_rating|floatformat:0|add:1 and average_rating|floatformat:1|slice:"-1" != "0" %}
+            <i class="fa-solid fa-star-half-stroke"></i>
+          {% else %}
+            <i class="fa-regular fa-star"></i>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="total-reviews">Based on {{ total_reviews }} review{{ total_reviews|pluralize }}</div>
+    </div>
+    <div class="rating-bars">
+      <div class="rating-bar">
+        <span>5 stars</span>
+        <div class="bar-container">
+          <div class="bar" style="width: {{ rating_percentages.5|default:0 }}%"></div>
+        </div>
+        <span>{{ rating_percentages.5|default:0 }}%</span>
+      </div>
+      <div class="rating-bar">
+        <span>4 stars</span>
+        <div class="bar-container">
+          <div class="bar" style="width: {{ rating_percentages.4|default:0 }}%"></div>
+        </div>
+        <span>{{ rating_percentages.4|default:0 }}%</span>
+      </div>
+      <div class="rating-bar">
+        <span>3 stars</span>
+        <div class="bar-container">
+          <div class="bar" style="width: {{ rating_percentages.3|default:0 }}%"></div>
+        </div>
+        <span>{{ rating_percentages.3|default:0 }}%</span>
+      </div>
+      <div class="rating-bar">
+        <span>2 stars</span>
+        <div class="bar-container">
+          <div class="bar" style="width: {{ rating_percentages.2|default:0 }}%"></div>
+        </div>
+        <span>{{ rating_percentages.2|default:0 }}%</span>
+      </div>
+      <div class="rating-bar">
+        <span>1 star</span>
+        <div class="bar-container">
+          <div class="bar" style="width: {{ rating_percentages.1|default:0 }}%"></div>
+        </div>
+        <span>{{ rating_percentages.1|default:0 }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Display existing reviews -->
+  <div class="reviews-list">
+    <h3>Customer Reviews</h3>
+    {% for review in reviews %}
+      <div class="review-item">
+        <div class="review-header">
+          <div class="reviewer-name">{{ review.customer_name }}</div>
+          <div class="review-rating">
+            {% for i in "12345" %}
+              {% if forloop.counter <= review.rating %}
+                <i class="fa-solid fa-star"></i>
+              {% else %}
+                <i class="fa-regular fa-star"></i>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="review-date">{{ review.created_at|date:"F d, Y" }}</div>
+        </div>
+        <div class="review-text">{{ review.comment }}</div>
+      </div>
+    {% empty %}
+      <p>No reviews yet. Be the first to review this product!</p>
+    {% endfor %}
+  </div>
+
+  <div class="review-form">
+    <h3>Write a Review</h3>
+    <form>
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Your Rating</label>
+        <div class="rating-input">
+          <i class="fa-regular fa-star" data-rating="1"></i>
+          <i class="fa-regular fa-star" data-rating="2"></i>
+          <i class="fa-regular fa-star" data-rating="3"></i>
+          <i class="fa-regular fa-star" data-rating="4"></i>
+          <i class="fa-regular fa-star" data-rating="5"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="review-name">Name</label>
+        <input type="text" id="review-name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="review-text">Review</label>
+        <textarea id="review-text" name="review_text" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="submit-review">Submit Review</button>
+    </form>
+  </div>
+</div>
+        <div class="tab-pane" id="shipping">
+          <h3>Delivery Options</h3>
+          <div class="shipping-options">
+            <div class="shipping-option">
+              <i class="fa-solid fa-truck-fast"></i>
+              <div>
+                <h4>Standard Delivery</h4>
+                <p>3-5 business days</p>
+                <p class="price">Free on orders above ₹500</p>
+              </div>
+            </div>
+            <div class="shipping-option">
+              <i class="fa-solid fa-rocket"></i>
+              <div>
+                <h4>Express Delivery</h4>
+                <p>1-2 business days</p>
+                <p class="price">₹99</p>
+              </div>
+            </div>
+          </div>
+          <h3>Shipping Policy</h3>
+          <ul>
+            <li>All orders are processed within 24 hours</li>
+            <li>We ship Monday-Friday</li>
+            <li>Delivery times may vary by location</li>
+            <li>Tracking information will be provided</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- You May Also Like -->
+    
+  </main>
+
+ <!-- ===== FOOTER ===== -->
+ <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand Section -->
+    <div class="footer-brand">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SuddhKhasta</span>
+      </div>
+      <p class="footer-text">
+        Pure. Authentic. Traditional.<br>
+        The taste of heritage in every bite.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="links-column">
+        <h3 class="links-title">Shop</h3>
+        <ul>
+          <li><a href="{% url 'orderpage' %}">All Products</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Gift Boxes</a></li>
+          <li><a href="#">Festive Specials</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">About</h3>
+        <ul>
+          <li><a href="{% url 'about' %}">Our Story</a></li>
+          <li><a href="#">Our Craft</a></li>
+          <li><a href="#">Quality & Purity</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">Help</h3>
+        <ul>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="">Shipping Policy</a></li>
+          <li><a href="{% url 'shippingpol' %}">Return & Refund Policy</a></li>
+          <li><a href="">Track Order</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="footer-contact">
+      <h3 class="links-title">Reach Us</h3>
+      <address>
+        <p><strong>SuddhKhasta</strong><br>
+        B-70 A, Lajpat Nagar, Sahibabad<br>
+        Ghaziabad, U.P. 201005</p>
+        <p><strong>Open:</strong> 10AM – 8PM Daily</p>
+        <p><a href="tel:+919319677381">+91 9319677381</a></p>
+        <p><a href="mailto:suddhkhasta3@gmail.com">suddhkhasta3@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <p>&copy; 2025 SuddhKhasta. All rights reserved.</p>
+      <div class="legal-links">
+        <a href="#">Privacy Policy</a>
+        <a href="{% url 'terms' %}">Terms of Service</a>
+        <a href="{% url 'shippingpol' %}">Shipping Policy</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+      <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+      <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+      <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+      <i class="fa-brands fa-google-pay" aria-label="Google Pay"></i>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="../static/js/script.js"></script>
+
+  <script>
+    // Add this JavaScript to your Product.html template or in a separate JS file
+// Add this JavaScript to your Product.html template or in a separate JS file
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Star rating functionality
+    const stars = document.querySelectorAll('.rating-input i');
+    let selectedRating = 0;
+
+    stars.forEach((star, index) => {
+        // Hover effect
+        star.addEventListener('mouseover', function() {
+            highlightStars(index + 1);
+        });
+
+        // Click to select rating
+        star.addEventListener('click', function() {
+            selectedRating = index + 1;
+            highlightStars(selectedRating);
+            
+            // Add selected class to maintain state
+            stars.forEach(s => s.classList.remove('selected'));
+            for (let i = 0; i <= index; i++) {
+                stars[i].classList.add('selected');
+            }
+        });
+    });
+
+    // Reset stars on mouse leave
+    document.querySelector('.rating-input').addEventListener('mouseleave', function() {
+        if (selectedRating > 0) {
+            highlightStars(selectedRating);
+        } else {
+            resetStars();
+        }
+    });
+
+    function highlightStars(rating) {
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.remove('fa-regular');
+                star.classList.add('fa-solid');
+            } else {
+                star.classList.remove('fa-solid');
+                star.classList.add('fa-regular');
+            }
+        });
+    }
+
+    function resetStars() {
+        stars.forEach(star => {
+            if (!star.classList.contains('selected')) {
+                star.classList.remove('fa-solid');
+                star.classList.add('fa-regular');
+            }
+        });
+    }
+
+    // Form submission
+    const reviewForm = document.querySelector('.review-form form');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (selectedRating === 0) {
+                alert('Please select a rating before submitting your review.');
+                return;
+            }
+
+            const name = document.getElementById('review-name').value.trim();
+            const reviewText = document.getElementById('review-text').value.trim();
+
+            if (!name || !reviewText) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Create FormData object
+            const formData = new FormData();
+            formData.append('rating', selectedRating);
+            formData.append('name', name);
+            formData.append('review_text', reviewText);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            // Submit the form via AJAX
+            fetch(window.location.pathname + '/submit-review/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reset form
+                    reviewForm.reset();
+                    selectedRating = 0;
+                    resetStars();
+                    stars.forEach(s => s.classList.remove('selected'));
+                    
+                    // Show success message
+                    alert('Thank you for your review!');
+                    
+                    // Optionally reload the page to show the new review
+                    location.reload();
+                } else {
+                    alert('Error submitting review: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting your review. Please try again.');
+            });
+        });
+    }
+});
+  </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // Quantity selector functionality
+  const quantityInput = document.getElementById('product-quantity');
+  const minusBtn = document.querySelector('.quantity-btn.minus');
+  const plusBtn = document.querySelector('.quantity-btn.plus');
+  const addToCartBtn = document.querySelector('.add-to-cart-btn');
+  
+  // Minus button - Fixed to prevent going below 1
+  if (minusBtn) {
+    minusBtn.addEventListener('click', function() {
+      let quantity = parseInt(quantityInput.value);
+      if (quantity > 1) {
+        quantityInput.value = quantity - 1;
+      }
+    });
+  }
+  
+  // Plus button - Fixed to increment by 1
+  if (plusBtn) {
+    plusBtn.addEventListener('click', function() {
+      let quantity = parseInt(quantityInput.value);
+      quantityInput.value = quantity +1;
+    });
+  }
+  
+  // Prevent manual input of invalid values
+  if (quantityInput) {
+    quantityInput.addEventListener('change', function() {
+      let quantity = parseInt(this.value);
+      if (isNaN(quantity) || quantity < 1) {
+        this.value = 1;
+      }
+    });
+  }
+  
+  // Add to cart functionality
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener('click', function() {
+      const productId = this.getAttribute('data-product-id');
+      const quantity = parseInt(quantityInput.value) || 1;
+      
+      // Disable button to prevent double clicks
+      this.disabled = true;
+      this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+      
+      // Send AJAX request to add to cart
+      fetch(`/cart/add/${productId}/`, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCSRFToken(),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `quantity=${quantity}`
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Update cart count in navbar
+          updateCartCount(data.cart_count);
+          
+          // Replace the entire product-actions section
+          const productActions = document.querySelector('.product-actions');
+          const quantitySelector = productActions.querySelector('.quantity-selector');
+          const addToCartBtn = productActions.querySelector('.add-to-cart-btn');
+          
+          // Remove quantity selector and add to cart button
+          if (quantitySelector) quantitySelector.remove();
+          if (addToCartBtn) addToCartBtn.remove();
+          
+          // Create and insert "Go to Cart" button
+          const goToCartBtn = document.createElement('a');
+          goToCartBtn.href = '/cart/';
+          goToCartBtn.className = 'go-to-cart-btn';
+          goToCartBtn.innerHTML = '<i class="fa-solid fa-shopping-cart"></i> Go to Cart';
+          
+          // Insert before the "Buy Now" button
+          const buyNowBtn = productActions.querySelector('.buy-now-btn');
+          productActions.insertBefore(goToCartBtn, buyNowBtn);
+          
+          showNotification('Product added to cart!', 'success');
+        } else {
+          throw new Error(data.message || 'Failed to add product to cart');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error adding product to cart', 'error');
+        
+        // Re-enable button on error
+        this.disabled = false;
+        this.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add to Cart';
+      });
+    });
+  }
+  
+  // Helper function to get CSRF token - FIXED VERSION
+  function getCSRFToken() {
+    // Try to get CSRF token from meta tag first
+    const metaToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    if (metaToken) return metaToken;
+    
+    // Try to get from cookie as fallback
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1];
+    
+    return cookieValue || '';
+  }
+  
+  // Helper function to update cart count
+  function updateCartCount(count) {
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    cartCountElements.forEach(el => {
+      el.textContent = count;
+      // Make sure the cart count is visible
+      el.style.display = count > 0 ? 'inline' : 'none';
+    });
+  }
+  
+  // Helper function to show notifications
+  function showNotification(message, type) {
+    // Remove existing notification if any
+    const existingNotification = document.getElementById('global-notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notificationEl = document.createElement('div');
+    notificationEl.id = 'global-notification';
+    notificationEl.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 5px;
+      color: white;
+      z-index: 10000;
+      font-family: inherit;
+      font-weight: 500;
+      max-width: 300px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    `;
+    
+    // Set styles based on type
+    notificationEl.style.backgroundColor = type === 'success' ? '#4CAF50' : '#F44336';
+    notificationEl.textContent = message;
+    
+    document.body.appendChild(notificationEl);
+    
+    // Show notification with animation
+    setTimeout(() => {
+      notificationEl.style.opacity = '1';
+    }, 10);
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+      notificationEl.style.opacity = '0';
+      setTimeout(() => {
+        if (notificationEl.parentNode) {
+          notificationEl.remove();
+        }
+      }, 300);
+    }, 3000);
+  }
+});
+</script>
+</body>
+</html>

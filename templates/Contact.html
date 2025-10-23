@@ -1,0 +1,476 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUDDKHASTA | Contact Us</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="../static/css/style.css" as="style">
+  <link rel="preload" href="../static/js/script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <style>
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    #toast-container {
+        left: 10px !important;
+        right: 10px !important;
+        max-width: none !important;
+    }
+    
+    .toast {
+        min-width: auto !important;
+        max-width: none !important;
+    }
+}
+</style>
+</head>
+<body>
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <!-- Navigation Links -->
+     <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="#colection" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <!-- <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li> -->
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <!-- <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li> -->
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <!-- <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li> -->
+      </ul>
+
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart/" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+<div id="toast-container" style="position: fixed; top: 15px; right: 200px; z-index: 1000; max-width: 400px; width: auto;">
+    <!-- Django Messages Integration -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast toast-{{ message.tags }}" style="
+                display: flex;
+                align-items: center;
+                padding: 16px 20px;
+                margin-bottom: 10px;
+                border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                color: white;
+                font-weight: 500;
+                position: relative;
+                overflow: hidden;
+                min-width: 300px;
+                max-width: 400px;
+                word-wrap: break-word;
+                transform: translateX(100%);
+                animation: slideIn 0.5s ease-out forwards;
+                {% if message.tags == 'success' %}
+                    background: linear-gradient(135deg, #4CAF50, #45a049);
+                {% elif message.tags == 'error' %}
+                    background: linear-gradient(135deg, #f44336, #da190b);
+                {% elif message.tags == 'warning' %}
+                    background: linear-gradient(135deg, #ff9800, #f57c00);
+                {% elif message.tags == 'info' %}
+                    background: linear-gradient(135deg, #2196F3, #1976D2);
+                {% else %}
+                    background: linear-gradient(135deg, #4CAF50, #45a049);
+                {% endif %}
+            ">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-times-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% elif message.tags == 'info' %}fa-info-circle{% else %}fa-check-circle{% endif %}" style="font-size: 20px; margin-right: 12px; flex-shrink: 0;"></i>
+                
+                <span style="flex: 1; line-height: 1.4;">{{ message }}</span>
+                
+                <button onclick="this.parentElement.style.animation='slideOut 0.3s ease-in forwards'; setTimeout(() => this.parentElement.remove(), 300);" style="
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    cursor: pointer;
+                    padding: 0;
+                    margin-left: 15px;
+                    opacity: 0.8;
+                    transition: opacity 0.2s;
+                    flex-shrink: 0;
+                " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <!-- Progress bar -->
+                <div style="
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.3);
+                    width: 100%;
+                    animation: progress 5s linear forwards;
+                "></div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- Add these CSS animations in your head section or style tag -->
+
+
+<!-- Auto-dismiss script (optional) -->
+<script>
+// Auto-dismiss toasts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const toasts = document.querySelectorAll('.toast');
+    toasts.forEach(toast => {
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'slideOut 0.3s ease-in forwards';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 5000);
+    });
+});
+</script>
+  <!-- ===== CONTACT HERO ===== -->
+  <section class="contact-hero">
+    <div class="contact-hero-content">
+      <h1>Get in Touch</h1>
+      <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+      <div class="contact-hero-decoration">
+        <span class="deco-cookie">🍪</span>
+        <span class="deco-cookie">🍪</span>
+        <span class="deco-cookie">🍪</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== CONTACT SECTION ===== -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <div class="contact-info">
+        <h2>Let's Talk</h2>
+        <p>Have questions about our cookies, want to place a custom order, or just want to say hello? We're here to help!</p>
+        
+        <div class="contact-details">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div class="contact-text">
+              <h3>Visit Us</h3>
+              <p>Golden Crumb Bakery<br>42 Artisan Lane, Bandra West<br>Mumbai, Maharashtra 400050</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <div class="contact-text">
+              <h3>Call Us</h3>
+              <p><a href="tel:+912266778899">+91 22 6677 8899</a><br>Mon-Sat: 9AM - 7PM</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div class="contact-text">
+              <h3>Email Us</h3>
+              <p><a href="mailto:hello@goldencrumb.com">hello@goldencrumb.com</a><br>We respond within 24 hours</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="social-links">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="contact-form-container">
+        <div class="form-header">
+          <h2>Send Us a Message</h2>
+          <p>Fill out the form below and we'll get back to you soon</p>
+        </div>
+        
+        <form class="contact-form" id="contactForm" action="{% url 'contact' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required>
+            <div class="error-message" id="nameError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error-message" id="emailError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone">
+          </div>
+       
+          
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+            <div class="error-message" id="messageError"></div>
+          </div>
+          
+          <button type="submit" class="submit-btn">
+            <span class="btn-text">Send Message</span>
+            <span class="btn-loader">
+              <i class="fa-solid fa-circle-notch"></i>
+            </span>
+          </button>
+        </form>
+        
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h3>Message Sent Successfully!</h3>
+          <p>Thank you for contacting us. We'll get back to you within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP SECTION ===== -->
+  <section class="map-section">
+    <div class="section-header">
+      <h2 class="section-title">Find Our Bakery</h2>
+      <p class="section-subtitle">Visit us for a fresh cookie experience</p>
+    </div>
+    
+    <div class="map-container">
+      <div class="map-placeholder">
+        <div class="map-overlay">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <h3>Interactive Map</h3>
+          <p>Click to view our location on Google Maps</p>
+          <a href="https://goo.gl/maps/example" target="_blank" class="cta-primary">View on Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ PREVIEW ===== -->
+  <section class="faq-preview">
+    <div class="section-header">
+      <h2 class="section-title">Common Questions</h2>
+      <p class="section-subtitle">Quick answers to frequently asked questions</p>
+    </div>
+    
+    <div class="faq-preview-container">
+      <div class="faq-item">
+        <h3>How long does shipping take?</h3>
+        <p>We ship within 24 hours of order placement. Delivery typically takes 2-5 business days depending on your location.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Do you offer custom cookie designs?</h3>
+        <p>Yes! We specialize in custom cookie designs for special occasions. Contact us with your ideas.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>What are your business hours?</h3>
+        <p>Our bakery is open from 10AM to 8PM daily. Our customer service team is available from 9AM to 7PM.</p>
+      </div>
+    </div>
+    
+    <div class="faq-cta">
+      <a href="index.html" class="cta-secondary">View All FAQs <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+ <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand Section -->
+    <div class="footer-brand">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SuddhKhasta</span>
+      </div>
+      <p class="footer-text">
+        Pure. Authentic. Traditional.<br>
+        The taste of heritage in every bite.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="links-column">
+        <h3 class="links-title">Shop</h3>
+        <ul>
+          <li><a href="{% url 'orderpage' %}">All Products</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Gift Boxes</a></li>
+          <li><a href="#">Festive Specials</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">About</h3>
+        <ul>
+          <li><a href="{% url 'about' %}">Our Story</a></li>
+          <li><a href="#">Our Craft</a></li>
+          <li><a href="#">Quality & Purity</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">Help</h3>
+        <ul>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="">Shipping Policy</a></li>
+          <li><a href="{% url 'shippingpol' %}">Return & Refund Policy</a></li>
+          <li><a href="">Track Order</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="footer-contact">
+      <h3 class="links-title">Reach Us</h3>
+      <address>
+        <p><strong>SuddhKhasta</strong><br>
+        B-70 A, Lajpat Nagar, Sahibabad<br>
+        Ghaziabad, U.P. 201005</p>
+        <p><strong>Open:</strong> 10AM – 8PM Daily</p>
+        <p><a href="tel:+919319677381">+91 9319677381</a></p>
+        <p><a href="mailto:suddhkhasta3@gmail.com">suddhkhasta3@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <p>&copy; 2025 SuddhKhasta. All rights reserved.</p>
+      <div class="legal-links">
+        <a href="#">Privacy Policy</a>
+        <a href="{% url 'terms' %}">Terms of Service</a>
+        <a href="{% url 'shippingpol' %}">Shipping Policy</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+      <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+      <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+      <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+      <i class="fa-brands fa-google-pay" aria-label="Google Pay"></i>
+    </div>
+  </div>
+</footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="../static/js/script.js"></script>
+</body>
+</html>

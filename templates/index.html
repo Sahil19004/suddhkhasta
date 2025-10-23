@@ -1,0 +1,806 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUDDKHASTA | Home</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="../static/css/style.css" as="style">
+  <link rel="preload" href="../static/js/script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+<style>
+   .video-testimonial-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .video-slider-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .video-slider {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-testimonial {
+            min-width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .video-testimonial.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .video-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 500px;
+            background: inherit;
+        }
+
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .actual-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #333;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-button:active {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .play-button.playing {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(102, 126, 234, 0.3) 0%, 
+                rgba(118, 75, 162, 0.2) 50%, 
+                rgba(0, 0, 0, 0.4) 100%);
+            z-index: 2;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-overlay.playing {
+            opacity: 0;
+        }
+
+        .video-content {
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: white;
+          
+        }
+
+        .customer-name {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #fff, #f8f8f8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .customer-location {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            opacity: 0.9;
+            font-weight: 400;
+            color: #f0f0f0;
+        }
+
+        .testimonial-text {
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-style: italic;
+            position: relative;
+            padding-left: 25px;
+            color: #fff;
+        }
+
+        .testimonial-text::before {
+            content: '"';
+            position: absolute;
+            left: -5px;
+            top: -15px;
+            font-size: 4em;
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-top: 35px;
+            padding: 0 20px;
+        }
+
+        .video-prev, .video-next {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .video-prev:hover, .video-next:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .video-prev:active, .video-next:active {
+            transform: scale(1.05);
+        }
+
+        .video-pagination {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .pagination-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pagination-dot.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transform: scale(1.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .pagination-dot:hover {
+            background: rgba(102, 126, 234, 0.6);
+            transform: scale(1.1);
+        }
+
+        /* Video progress indicator */
+        .video-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.1s ease;
+            z-index: 11;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .video-wrapper {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+            
+            .video-container {
+                min-height: 300px;
+            }
+            
+            .video-content {
+                padding: 30px;
+            }
+            
+            .customer-name {
+                font-size: 1.8em;
+            }
+            
+            .testimonial-text {
+                font-size: 1em;
+            }
+            
+            .play-button {
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+            }
+        }
+
+        /* Loading animation */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+</style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body >
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-cookie">
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <!-- Navigation Links -->
+      <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="#colection" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <!-- <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li> -->
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <!-- <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li> -->
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <!-- <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li> -->
+      </ul>
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section id="home" class="hero">
+    <div class="hero-slides">
+      <!-- Slide 1 -->
+      <div class="hero-slide active">
+        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA.png')"></div>
+        <div class="hero-content">
+          <!-- <h1 class="hero-title">Artisan Cookie Craftsmanship</h1>
+          <p class="hero-subtitle">Handmade with premium ingredients and generations of baking wisdom</p> -->
+          <div class="hero-cta">
+            <!-- <a href="Product.html" class="cta-primary">Explore Collections</a>
+            <a href="#story" class="cta-secondary">Our Story <i class="fa-solid fa-arrow-right"></i></a> -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="hero-slide">
+        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA2.png')"></div>
+        <div class="hero-content">
+          <!-- <h1 class="hero-title">Seasonal Limited Editions</h1>
+          <p class="hero-subtitle">Discover our exclusive flavors available for a limited time only</p> -->
+          <div class="hero-cta">
+            <!-- <a href="Product.html" class="cta-primary">View Seasonal</a>
+            <a href="#gifting" class="cta-secondary">Gift Boxes <i class="fa-solid fa-arrow-right"></i></a> -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 3 -->
+      <div class="hero-slide">
+        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA3.png')"></div>
+        <div class="hero-content">
+          <!-- <h1 class="hero-title">Perfect Pairings</h1>
+          <p class="hero-subtitle">Curated selections to complement your favorite beverages</p>
+          <div class="hero-cta">
+            <a href="#Product.html" class="cta-primary">Shop Pairings</a>
+            <a href="#visit" class="cta-secondary">Visit Our Café <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Slide Controls -->
+    <div class="hero-controls">
+      <button class="hero-prev" aria-label="Previous Slide">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <div class="hero-pagination"></div>
+      <button class="hero-next" aria-label="Next Slide">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+
+  <!-- ===== FEATURED PRODUCTS ===== -->
+  <section class="featured-products container" id="colection">
+    <div class="section-header" style="margin-top: 33px;">
+      <h2 class="section-title">Our Products</h2>
+      <p class="section-subtitle">Customer favorites that never disappoint</p>
+    </div>
+
+    <div class="product-carousel">
+      <!-- Product 1 -->
+    {% for i in products %}
+      <div class="product-card">
+        <div class="product-badge">{{i.badge}}</div>
+      <a href="/product-detail/{{i.id}}" style="cursor: pointer;">  <div class="product-image">
+          <img src="{{i.image1.url}}" alt="Salted Caramel Cookie" loading="lazy">
+        </div>
+        </a>
+        <div class="product-content">
+          <h3 class="product-name">{{i.name}}</h3>
+          <p class="product-desc">{{i.description|truncatechars:100}} <a href="" style="text-decoration: underline;color:  var(--primary);">read more</a></p>
+
+       
+          <div class="product-price">
+            <span class="current-price">₹{{i.mrp}}</span>
+            <span class="original-price">₹{{i.price}}</span>
+          </div>
+          <a href="/product-detail/{{i.id}}" class="add-to-cart1" style="cursor:pointer;">
+            <i class="fa-solid fa-plus"></i> Add to Cart
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+      
+      <!-- Product 2 -->
+   
+    </div>
+
+    <div class="carousel-controls">
+      <button class="carousel-prev" aria-label="Previous Product">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button class="carousel-next" aria-label="Next Product">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+
+
+
+  <!-- ===== TESTIMONIALS ===== -->
+<!-- ===== VIDEO TESTIMONIALS ===== -->
+  <section class="video-testimonials">
+    <div class="section-header">
+      <h2 class="section-title">Sweet Moments</h2>
+      <p class="section-subtitle">Real customers sharing their SUDDKHASTA</p>
+      <div class="section-decoration">
+        <span class="deco-line"></span>
+        <span class="deco-dot"></span>
+        <span class="deco-line"></span>
+      </div>
+    </div>
+ <div class="video-testimonial-container">
+        <div class="video-slider-wrapper">
+            <div class="video-slider" id="videoSlider">
+                
+                <!-- Django Template Loop Start -->
+                {% for video in video %}
+                <div class="video-testimonial {% if forloop.first %}active{% endif %}">
+                    <div class="video-wrapper">
+                        <div class="video-container">
+                            {% if video.video %}
+                                <!-- Actual Video -->
+                                <video class="actual-video" preload="metadata" muted controls>
+                                    <source src="{{ video.video.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-progress"></div>
+                                <div class="video-loading" style="display: none;">
+                                    <div class="loading-spinner"></div>
+                                </div>
+                      
+                              
+                            {% endif %}
+                   
+                    
+                        </div>
+                        
+                        <div class="video-content">
+                            <h3 class="customer-namae" style="color: #5a3921;">{{ video.name }}</h3>
+                            <p class="customer-location">{{ video.location }}</p>
+                            <div class="testimonial-text">
+                                <p>{{ video.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- No Videos Available -->
+                <div class="video-testimonial active">
+                    <div class="video-wrapper">
+                        <div class="video-container">
+                            <div class="video-placeholder" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=600&auto=format&fit=crop')">
+                            </div>
+                            <button class="play-button" aria-label="No videos available" disabled>
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                            </button>
+                            <div class="video-overlay"></div>
+                        </div>
+                        <div class="video-content">
+                            <h3 class="customer-name">No Testimonials</h3>
+                            <p class="customer-location">Available</p>
+                            <div class="testimonial-text">
+                                <p>No video testimonials have been added yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- Django Template Loop End -->
+                
+            </div>
+        </div>
+
+        <div class="video-controls">
+            <button class="video-prev" aria-label="Previous testimonial" onclick="changeSlide(-1)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            
+            <div class="video-pagination" id="videoPagination">
+                {% for video in video %}
+                <span class="pagination-dot {% if forloop.first %}active{% endif %}" 
+                      data-index="{{ forloop.counter0 }}" onclick="goToSlide({{ forloop.counter0 }})"></span>
+                {% empty %}
+                <span class="pagination-dot active" data-index="0"></span>
+                {% endfor %}
+            </div>
+            
+            <button class="video-next" aria-label="Next testimonial" onclick="changeSlide(1)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <!-- <section class="newsletter">
+    <div class="newsletter-container">
+      <div class="newsletter-image">
+        <img src="https://images.unsplash.com/photo-1607478900766-efe13248b125?q=80&w=800&auto=format&fit=crop" alt="Cookie box" loading="lazy">
+      </div>
+      <div class="newsletter-content">
+        <h2 class="section-title">Join Our Cookie Club</h2>
+        <p class="newsletter-text">Subscribe to get 15% off your first order and receive exclusive offers, new flavor announcements, and baking tips.</p>
+        <form class="newsletter-form">
+          <div class="form-group">
+            <input type="email" placeholder="Your email address" required>
+            <button type="submit" class="cta-primary">Subscribe</button>
+          </div>
+          <div class="form-checkbox">
+            <input type="checkbox" id="consent" required checked>
+            <label for="consent">I agree to receive marketing emails</label>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section> -->
+
+    <!-- ===== FAQ SECTION ===== -->
+<section id="faq" class="faq-section">
+  <div class="section-header">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <p class="section-subtitle">Everything you need to know about our Thekua, Namkeen, and services</p>
+    <div class="section-decoration">
+      <span class="deco-line"></span>
+      <span class="deco-dot"></span>
+      <span class="deco-line"></span>
+    </div>
+  </div>
+
+  <div class="faq-container">
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>How long do your Thekua and Namkeen stay fresh?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>All our products are freshly made and packed with care. Thekua and Namkeen stay fresh for up to <strong>45 days</strong> when stored in an airtight container at room temperature. Avoid exposure to moisture and direct sunlight for best taste.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>Do you use any preservatives or artificial flavors?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>No, <strong>SuddhKhasta</strong> proudly stands by our name — <em>“Suddh”</em> means pure. We use <strong>100% natural ingredients</strong> with no preservatives, no artificial color, and no flavor enhancers. Every bite is just pure traditional taste.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>What is your shipping and delivery time?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>We deliver all over India. Orders are usually dispatched within <strong>24 hours</strong> of confirmation. Depending on your location, delivery takes <strong>2–6 business days</strong>. Each order is carefully packed to ensure freshness and safety during transit.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>Can I place a custom or bulk order?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>Yes! We accept <strong>custom and bulk orders</strong> for events, functions, or corporate gifting. You can choose flavors, packaging, and even personalized gift notes. For bulk orders, reach out to us via the <a href="{% url 'contact' %}">Contact Us</a> page.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>What is your return or replacement policy?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>Since our products are perishable, we don’t accept returns once opened. However, if your order arrives <strong>damaged or incorrect</strong>, please contact us within <strong>24 hours</strong> with your order details. We’ll issue a replacement or refund immediately.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>Do you offer COD (Cash on Delivery)?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>Yes, we offer <strong>Cash on Delivery</strong> for most locations across India. You can also pay securely through UPI, Debit/Credit cards, or Net Banking at checkout.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" aria-expanded="false">
+        <span>Are your products available offline?</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        <p>Yes! You can visit our store at <strong>B-70 A, Lajpat Nagar, Sahibabad, Ghaziabad, UP – 201005</strong> to experience the freshness of SuddhKhasta Thekua and Namkeen in person.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-cta">
+    <p>Still have questions? We're happy to help!</p>
+    <a href="{% url 'contact' %}" class="cta-primary">Contact Us</a>
+  </div>
+</section>
+
+  <!-- ===== FOOTER ===== -->
+ <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand Section -->
+    <div class="footer-brand">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SuddhKhasta</span>
+      </div>
+      <p class="footer-text">
+        Pure. Authentic. Traditional.<br>
+        The taste of heritage in every bite.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="links-column">
+        <h3 class="links-title">Shop</h3>
+        <ul>
+          <li><a href="{% url 'orderpage' %}">All Products</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Gift Boxes</a></li>
+          <li><a href="#">Festive Specials</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">About</h3>
+        <ul>
+          <li><a href="{% url 'about' %}">Our Story</a></li>
+          <li><a href="#">Our Craft</a></li>
+          <li><a href="#">Quality & Purity</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">Help</h3>
+        <ul>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="">Shipping Policy</a></li>
+          <li><a href="{% url 'shippingpol' %}">Return & Refund Policy</a></li>
+          <li><a href="">Track Order</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="footer-contact">
+      <h3 class="links-title">Reach Us</h3>
+      <address>
+        <p><strong>SuddhKhasta</strong><br>
+        B-70 A, Lajpat Nagar, Sahibabad<br>
+        Ghaziabad, U.P. 201005</p>
+        <p><strong>Open:</strong> 10AM – 8PM Daily</p>
+        <p><a href="tel:+919319677381">+91 9319677381</a></p>
+        <p><a href="mailto:suddhkhasta3@gmail.com">suddhkhasta3@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <p>&copy; 2025 SuddhKhasta. All rights reserved.</p>
+      <div class="legal-links">
+        <a href="#">Privacy Policy</a>
+        <a href="{% url 'terms' %}">Terms of Service</a>
+        <a href="{% url 'shippingpol' %}">Shipping Policy</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+      <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+      <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+      <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+      <i class="fa-brands fa-google-pay" aria-label="Google Pay"></i>
+    </div>
+  </div>
+</footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="../static/js/script.js"></script>
+</body>
+</html>

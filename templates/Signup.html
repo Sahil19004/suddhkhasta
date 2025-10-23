@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUDDKHASTA | Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Animated Background -->
+    <div class="auth-bg">
+      <div class="floating-cookies">
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+      </div>
+    </div>
+    
+    <!-- Auth Box -->
+    <div class="auth-box register-box" style="margin: 2%;">
+      <div class="brand-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+      
+      <h2 class="auth-title">Create Account</h2>
+      <p class="auth-subtitle">Join our cookie community</p>
+      
+      <!-- Display Django Messages -->
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <form id="registerForm" class="auth-form" action="{% url 'signup' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="registerName">Full Name</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="registerName" placeholder="John Doe" required name="fullname">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerPhone">Phone Number</label>
+          <div class="input-with-icon">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="registerPhone" placeholder="1234567890" required name="phone" maxlength="10">
+          </div>
+          <div id="phoneError" class="error-message" style="display: none;"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="registerEmail" placeholder="your@email.com" required name="email">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerPassword">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="registerPassword" placeholder="••••••••" required name="password">
+            <button type="button" class="toggle-password" onclick="togglePassword('registerPassword')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="password-strength">
+            <div id="passwordRequirements" class="password-requirements">
+              <div id="lengthReq" class="requirement">
+                <i class="fas fa-times"></i> At least 8 characters
+              </div>
+              <div id="numberReq" class="requirement">
+                <i class="fas fa-times"></i> At least one number
+              </div>
+              <div id="specialReq" class="requirement">
+                <i class="fas fa-times"></i> At least one special character
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerConfirmPassword">Confirm Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="registerConfirmPassword" placeholder="••••••••" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('registerConfirmPassword')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div id="confirmPasswordError" class="error-message" style="display: none;"></div>
+        </div>
+       
+        <button type="submit" class="auth-btn">
+          <span>Create Account</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <p class="auth-switch">
+          Already have an account? <a href="{% url 'login' %}" class="switch-link">Sign in</a>
+        </p>
+      </form>
+    </div>
+    
+    <!-- Success Toast -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <script>
+    // Password toggle functionality
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.parentElement.querySelector('.toggle-password i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Simple phone validation function (10 digits only)
+    function validatePhone(phone) {
+      // Remove any spaces or special characters
+      const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+      // Check if it's exactly 10 digits
+      return /^\d{10}$/.test(cleanPhone);
+    }
+
+    // Password validation function
+    function validatePassword(password) {
+      const requirements = {
+        length: password.length >= 8,
+        number: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      };
+      return requirements;
+    }
+
+    // Update password requirements display
+    function updatePasswordRequirements(password) {
+      const requirements = validatePassword(password);
+      
+      const lengthReq = document.getElementById('lengthReq');
+      const numberReq = document.getElementById('numberReq');
+      const specialReq = document.getElementById('specialReq');
+      
+      // Update length requirement
+      if (requirements.length) {
+        lengthReq.classList.add('valid');
+        lengthReq.querySelector('i').className = 'fas fa-check';
+      } else {
+        lengthReq.classList.remove('valid');
+        lengthReq.querySelector('i').className = 'fas fa-times';
+      }
+      
+      // Update number requirement
+      if (requirements.number) {
+        numberReq.classList.add('valid');
+        numberReq.querySelector('i').className = 'fas fa-check';
+      } else {
+        numberReq.classList.remove('valid');
+        numberReq.querySelector('i').className = 'fas fa-times';
+      }
+      
+      // Update special character requirement
+      if (requirements.special) {
+        specialReq.classList.add('valid');
+        specialReq.querySelector('i').className = 'fas fa-check';
+      } else {
+        specialReq.classList.remove('valid');
+        specialReq.querySelector('i').className = 'fas fa-times';
+      }
+      
+      return requirements.length && requirements.number && requirements.special;
+    }
+
+    // Show toast message
+    function showToast(message, type = 'error') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Validate confirm password
+    function validateConfirmPassword() {
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      const errorDiv = document.getElementById('confirmPasswordError');
+      
+      if (confirmPassword && password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.style.display = 'block';
+        return false;
+      } else {
+        errorDiv.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Validate phone number
+    function validatePhoneNumber() {
+      const phone = document.getElementById('registerPhone').value.trim();
+      const errorDiv = document.getElementById('phoneError');
+      
+      if (phone && !validatePhone(phone)) {
+        errorDiv.textContent = 'Please enter a valid 10-digit phone number';
+        errorDiv.style.display = 'block';
+        return false;
+      } else {
+        errorDiv.style.display = 'none';
+        return true;
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('registerPassword');
+      const confirmPasswordInput = document.getElementById('registerConfirmPassword');
+      const phoneInput = document.getElementById('registerPhone');
+      const countrySelect = document.getElementById('countryCode');
+      const form = document.getElementById('registerForm');
+      
+      // Password input validation
+      passwordInput.addEventListener('input', function() {
+        updatePasswordRequirements(this.value);
+        if (confirmPasswordInput.value) {
+          validateConfirmPassword();
+        }
+      });
+      
+      // Confirm password validation
+      confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+      confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+      
+      // Phone validation
+      phoneInput.addEventListener('input', function() {
+        // Only allow numbers
+        this.value = this.value.replace(/[^0-9]/g, '');
+        validatePhoneNumber();
+      });
+      phoneInput.addEventListener('blur', validatePhoneNumber);
+      
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        const name = document.getElementById('registerName').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
+        const phone = document.getElementById('registerPhone').value.trim();
+        
+        // Basic validation
+        if (!name || !email || !password || !confirmPassword || !phone) {
+          e.preventDefault();
+          showToast('Please fill in all fields');
+          return;
+        }
+        
+        // Phone validation
+        if (!validatePhone(phone)) {
+          e.preventDefault();
+          showToast('Please enter a valid 10-digit phone number');
+          return;
+        }
+        
+        // Password validation
+        const isValidPassword = updatePasswordRequirements(password);
+        if (!isValidPassword) {
+          e.preventDefault();
+          showToast('Please ensure your password meets all requirements');
+          return;
+        }
+        
+        // Confirm password validation
+        if (!validateConfirmPassword()) {
+          e.preventDefault();
+          showToast('Passwords do not match');
+          return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          e.preventDefault();
+          showToast('Please enter a valid email address');
+          return;
+        }
+        
+        showToast('Creating account...', 'success');
+      });
+    });
+  </script>
+  
+  <style>
+    /* Remove all phone container specific styles */
+    
+    .password-requirements {
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      color: #dc3545;
+      transition: color 0.3s ease;
+    }
+    
+    .requirement i {
+      margin-right: 6px;
+      font-size: 10px;
+    }
+    
+    .requirement.valid {
+      color: #28a745;
+    }
+    
+    .error-message {
+      color: #dc3545;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    
+    .messages {
+      margin-bottom: 20px;
+    }
+    
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .toast.error {
+      background-color: #dc3545;
+    }
+    
+    .toast.success {
+      background-color: #28a745;
+    }
+    
+    /* Form group spacing and labels */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 14px;
+    }
+    
+    /* Responsive phone input */
+    @media (max-width: 480px) {
+      .phone-input-container {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .country-select {
+        width: 100%;
+        border-radius: 12px;
+        border: 2px solid #e1e5e9;
+      }
+      
+      .phone-input-container .input-with-icon input {
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+      }
+    }
+    
+    /* Form input styling updates */
+    .input-with-icon {
+      position: relative;
+    }
+    
+    .input-with-icon input {
+      width: 100%;
+      padding: 14px 16px 14px 45px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .input-with-icon input:focus {
+      outline: none;
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+    
+    .input-with-icon i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 14px;
+      z-index: 1;
+    }
+    
+    /* Special padding for password fields with toggle button */
+    .input-with-icon input[type="password"] {
+      padding-right: 45px;
+    }
+    
+    .toggle-password {
+      background: none;
+      border: none;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #666;
+      z-index: 2;
+    }
+  </style>
+</body>
+</html>

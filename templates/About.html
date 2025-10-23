@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  {% load static %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUDDKHASTA | About Us</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body>
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-cookie">
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <!-- Navigation Links -->
+    <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="#colection" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <!-- <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li> -->
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <!-- <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li> -->
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <!-- <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li> -->
+      </ul>
+
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+
+    <!-- Main Content -->
+<main class="about-content">
+    <!-- Story Section -->
+    <section class="story-section">
+        <div class="container">
+            <div class="story-content">
+                <div class="story-text">
+                    <h2>Our Story</h2>
+                    <p>SuddhKhasta was born out of a deep love for the authentic flavors of traditional Indian snacks, especially the beloved <strong>Thekua</strong>. Inspired by family recipes passed down through generations, we set out to bring the true taste of this cherished delicacy to homes everywhere.</p>
+                    <p>Our journey began with a simple mission: to preserve the rich heritage of Thekua while delivering it fresh, crispy, and full of flavor. Every batch we make is crafted with care, using only the finest ingredients and time-honored techniques that honor the original recipe.</p>
+                    <p>At SuddhKhasta, we believe that food is more than just nourishment — it’s a connection to culture, memories, and moments shared with loved ones. That’s why we pour our heart into every snack we bake, ensuring each bite brings joy and nostalgia.</p>
+                    <p>Join us as we celebrate tradition with a modern touch and experience the irresistible crunch and sweetness that make SuddhKhasta Thekua Snacks a true taste of home.</p>
+                </div>
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1601042983680-6e75f02a27d0?q=80&w=800&auto=format&fit=crop" alt="Traditional Thekua preparation">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="container">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Purity & Quality</h3>
+                    <p>We use only pure, high-quality ingredients — ensuring every Thekua is as wholesome as it is delicious.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <h3>Handcrafted with Love</h3>
+                    <p>Each Thekua is carefully shaped and fried by hand, maintaining the traditional touch that defines true authenticity.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Authenticity</h3>
+                    <p>We stay true to our roots — preserving the cultural essence of Thekua while presenting it in a fresh, modern way.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+  
+
+    <!-- Visit Section -->
+   
+</main>
+
+
+
+    <!-- Footer -->
+ <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand Section -->
+    <div class="footer-brand">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SuddhKhasta</span>
+      </div>
+      <p class="footer-text">
+        Pure. Authentic. Traditional.<br>
+        The taste of heritage in every bite.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="links-column">
+        <h3 class="links-title">Shop</h3>
+        <ul>
+          <li><a href="{% url 'orderpage' %}">All Products</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Gift Boxes</a></li>
+          <li><a href="#">Festive Specials</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">About</h3>
+        <ul>
+          <li><a href="{% url 'about' %}">Our Story</a></li>
+          <li><a href="#">Our Craft</a></li>
+          <li><a href="#">Quality & Purity</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">Help</h3>
+        <ul>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="">Shipping Policy</a></li>
+          <li><a href="{% url 'shippingpol' %}">Return & Refund Policy</a></li>
+          <li><a href="">Track Order</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="footer-contact">
+      <h3 class="links-title">Reach Us</h3>
+      <address>
+        <p><strong>SuddhKhasta</strong><br>
+        B-70 A, Lajpat Nagar, Sahibabad<br>
+        Ghaziabad, U.P. 201005</p>
+        <p><strong>Open:</strong> 10AM – 8PM Daily</p>
+        <p><a href="tel:+919319677381">+91 9319677381</a></p>
+        <p><a href="mailto:suddhkhasta3@gmail.com">suddhkhasta3@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <p>&copy; 2025 SuddhKhasta. All rights reserved.</p>
+      <div class="legal-links">
+        <a href="#">Privacy Policy</a>
+        <a href="{% url 'terms' %}">Terms of Service</a>
+        <a href="{% url 'shippingpol' %}">Shipping Policy</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+      <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+      <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+      <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+      <i class="fa-brands fa-google-pay" aria-label="Google Pay"></i>
+    </div>
+  </div>
+</footer>
+
+    <script src="../static/js/script.js"></script>
+</body>
+</html>

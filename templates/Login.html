@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUDDKHASTA | Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Animated Background -->
+    <div class="auth-bg">
+      <div class="floating-cookies">
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+        <div class="cookie"></div>
+      </div>
+    </div>
+    
+    <!-- Auth Box -->
+    <div class="auth-box login-box" style="margin:2%">
+      <div class="brand-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+      
+      <h2 class="auth-title">Welcome Back</h2>
+      <p class="auth-subtitle">Sign in to your account</p>
+      
+      <!-- Display Django Messages -->
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <form id="loginForm" class="auth-form" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="loginEmail" name="email" placeholder="your@email.com" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="auth-btn" style="background-color: var(--primary);">
+          <span>Sign In</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <p class="auth-switch">
+          Don't have an account? <a href="{% url 'signup' %}" class="switch-link">Sign up</a>
+        </p>
+      </form>
+    </div>
+    
+    <!-- Success Toast -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <script>
+    // Password toggle functionality
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.parentElement.querySelector('.toggle-password i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Show toast message
+    function showToast(message, type = 'error') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('loginForm');
+      
+      // Form submission validation
+      form.addEventListener('submit', function(e) {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        // Basic validation
+        if (!email || !password) {
+          e.preventDefault();
+          showToast('Please fill in all fields');
+          return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          e.preventDefault();
+          showToast('Please enter a valid email address');
+          return;
+        }
+        
+        showToast('Signing in...', 'success');
+      });
+    });
+  </script>
+  
+  <style>
+    /* Form styling */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 14px;
+    }
+    
+    .input-with-icon {
+      position: relative;
+    }
+    
+    .input-with-icon input {
+      width: 100%;
+      padding: 14px 16px 14px 45px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    
+    .input-with-icon input:focus {
+      outline: none;
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+    }
+    
+    .input-with-icon i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 14px;
+      z-index: 1;
+    }
+    
+    /* Special padding for password fields with toggle button */
+    .input-with-icon input[type="password"] {
+      padding-right: 45px;
+    }
+    
+    .toggle-password {
+      background: none;
+      border: none;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #666;
+      z-index: 2;
+    }
+    
+    .toggle-password:hover {
+      color: #ff6b35;
+    }
+    
+    .forgot-password {
+      display: block;
+      text-align: right;
+      margin-top: 8px;
+      font-size: 14px;
+      color: #ff6b35;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .forgot-password:hover {
+      text-decoration: underline;
+      color: #e55a2b;
+    }
+    
+    .messages {
+      margin-bottom: 20px;
+    }
+    
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    
+    .alert-error {
+      background-color: #fee;
+      color: #c53030;
+      border: 1px solid #feb2b2;
+    }
+    
+    .alert-success {
+      background-color: #f0fff4;
+      color: #22543d;
+      border: 1px solid #9ae6b4;
+    }
+    
+    .auth-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    
+    .auth-btn:hover {
+      background: linear-gradient(135deg, #e55a2b, #e8851a);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+    }
+    
+    .auth-switch {
+      text-align: center;
+      margin-top: 24px;
+      color: #718096;
+      font-size: 14px;
+    }
+    
+    .switch-link {
+      color: #ff6b35;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .switch-link:hover {
+      text-decoration: underline;
+      color: #e55a2b;
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .toast.error {
+      background-color: #dc3545;
+    }
+    
+    .toast.success {
+      background-color: #28a745;
+    }
+  </style>
+</body>
+</html>

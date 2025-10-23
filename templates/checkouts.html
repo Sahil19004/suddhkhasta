@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout - Complete Your Order</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .checkout-header h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 1.8em;
+    }
+
+    .checkout-header p {
+        color: #7f8c8d;
+        font-size: 1em;
+    }
+
+    .checkout-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+    }
+
+    .checkout-form {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .order-summary {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        height: fit-content;
+        position: sticky;
+        top: 15px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .form-section h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-section h3 i {
+        color: #3498db;
+        font-size: 1.1em;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95em;
+    }
+
+    .form-group label.required::after {
+        content: " *";
+        color: #e74c3c;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ecf0f1;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .form-group.invalid input,
+    .form-group.invalid select {
+        border-color: #e74c3c;
+    }
+
+    .error {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .form-group.invalid .error {
+        display: block;
+    }
+
+    .payment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .payment-method {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border: 2px solid #ecf0f1;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-method:hover {
+        border-color: #3498db;
+        background-color: #f8f9fa;
+    }
+
+    .payment-method input {
+        margin-right: 8px;
+    }
+
+    .payment-method label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95em;
+    }
+
+    .payment-instructions {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #3498db;
+    }
+
+    .payment-instructions h4 {
+        color: #2c3e50;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1em;
+    }
+
+    .order-summary h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        font-size: 0.95em;
+    }
+
+    .discount-row {
+        color: #27ae60;
+    }
+
+    .discount-amount {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    .discount-row small {
+        display: block;
+        color: #7f8c8d;
+        font-size: 0.85em;
+    }
+
+    .divider {
+        height: 1px;
+        background: #ecf0f1;
+        margin: 15px 0;
+    }
+
+    .total-row {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #2c3e50;
+        border-top: 2px solid #ecf0f1;
+        padding-top: 12px;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 15px 0;
+    }
+
+    .checkout-btn:hover {
+        background: #219a52;
+    }
+
+    .payment-options-bottom {
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    .payment-options-bottom span {
+        display: block;
+        margin-bottom: 8px;
+        color: #7f8c8d;
+        font-size: 0.9em;
+    }
+
+    .payment-icons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        font-size: 20px;
+        color: #7f8c8d;
+    }
+
+    .safety-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        margin-top: 15px;
+    }
+
+    .safety-badge i {
+        font-size: 20px;
+        color: #27ae60;
+    }
+
+    .safety-badge h4 {
+        color: #2c3e50;
+        margin-bottom: 4px;
+        font-size: 0.95em;
+    }
+
+    .safety-badge p {
+        color: #7f8c8d;
+        font-size: 0.85em;
+    }
+
+    .upi-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 15px;
+    }
+
+    .upi-modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .qr-code-placeholder {
+        width: 200px;
+        height: 200px;
+        background: #f5f5f5;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #ddd;
+        margin: 15px 0;
+        font-size: 14px;
+        color: #7f8c8d;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .modal-buttons {
+        margin-top: 15px;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-secondary {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    /* QR Code Section Styles */
+    .qr-section {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e1e8ed;
+    }
+
+    .qr-section h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1em;
+    }
+
+    .qr-container {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0;
+    }
+
+    .qr-placeholder {
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .amount-display {
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    .amount-display .amount {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #27ae60;
+        margin-bottom: 8px;
+    }
+
+    .amount-display .instruction {
+        color: #7f8c8d;
+        font-size: 0.9em;
+    }
+
+    .utr-form {
+        margin-top: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e1e8ed;
+    }
+
+    .utr-form h5 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1em;
+    }
+
+    .utr-form p {
+        color: #7f8c8d;
+        margin-bottom: 12px;
+        font-size: 0.9em;
+    }
+
+    .utr-input-group {
+        margin: 15px 0;
+    }
+
+    .utr-field {
+        margin-bottom: 12px;
+    }
+
+    .utr-field label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95em;
+    }
+
+    .utr-field input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ecf0f1;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .utr-field input:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .utr-note {
+        color: #e67e22;
+        font-size: 0.85em;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .payment-note {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 12px;
+        border-radius: 5px;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9em;
+    }
+
+    .payment-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e8f4fd;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+    }
+
+    .payment-info h4 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1em;
+    }
+
+    .payment-info ul {
+        padding-left: 20px;
+        color: #2c3e50;
+    }
+
+    .payment-info li {
+        margin-bottom: 6px;
+        font-size: 0.9em;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+
+        .checkout-header {
+            margin-bottom: 15px;
+            padding: 15px 10px;
+        }
+
+        .checkout-header h1 {
+            font-size: 1.5em;
+        }
+
+        .checkout-header p {
+            font-size: 0.9em;
+        }
+
+        .checkout-content {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .checkout-form {
+            padding: 15px;
+        }
+
+        .order-summary {
+            position: static;
+            padding: 15px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+        }
+
+        .form-section h3 {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        .payment-method {
+            padding: 10px;
+        }
+
+        .payment-method label {
+            font-size: 0.9em;
+        }
+
+        .payment-instructions {
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .payment-instructions h4 {
+            font-size: 1em;
+        }
+
+        .order-summary h2 {
+            font-size: 1.2em;
+            margin-bottom: 12px;
+        }
+
+        .summary-row {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            padding: 6px 0;
+        }
+
+        .total-row {
+            font-size: 1em;
+            padding-top: 10px;
+        }
+
+        .checkout-btn {
+            padding: 12px;
+            font-size: 16px;
+            margin: 12px 0;
+        }
+
+        .payment-options-bottom {
+            margin: 12px 0;
+        }
+
+        .payment-options-bottom span {
+            font-size: 0.85em;
+        }
+
+        .payment-icons {
+            font-size: 18px;
+            gap: 10px;
+        }
+
+        .safety-badge {
+            padding: 10px;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .safety-badge i {
+            font-size: 18px;
+        }
+
+        .safety-badge h4 {
+            font-size: 0.9em;
+        }
+
+        .safety-badge p {
+            font-size: 0.8em;
+        }
+
+        .qr-section {
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .qr-section h4 {
+            font-size: 1em;
+            margin-bottom: 12px;
+        }
+
+        .qr-placeholder {
+            min-height: 180px;
+        }
+
+        .amount-display .amount {
+            font-size: 1.1em;
+        }
+
+        .amount-display .instruction {
+            font-size: 0.85em;
+        }
+
+        .utr-form {
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .utr-form h5 {
+            font-size: 0.95em;
+        }
+
+        .utr-form p {
+            font-size: 0.85em;
+        }
+
+        .utr-field input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .utr-note {
+            font-size: 0.8em;
+        }
+
+        .payment-note {
+            padding: 10px;
+            font-size: 0.85em;
+        }
+
+        .payment-info {
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .payment-info h4 {
+            font-size: 1em;
+        }
+
+        .payment-info li {
+            font-size: 0.85em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 8px;
+        }
+
+        .checkout-header {
+            padding: 12px 8px;
+        }
+
+        .checkout-header h1 {
+            font-size: 1.3em;
+        }
+
+        .checkout-form {
+            padding: 12px;
+        }
+
+        .order-summary {
+            padding: 12px;
+        }
+
+        .form-section h3 {
+            font-size: 1em;
+        }
+
+        .qr-code-placeholder {
+            width: 180px;
+            height: 180px;
+        }
+
+        .checkout-btn {
+            font-size: 15px;
+            padding: 10px;
+        }
+
+        .modal-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            margin: 2px 0;
+        }
+    }
+
+    /* Landscape orientation for mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .container {
+            padding: 8px;
+        }
+
+        .checkout-content {
+            grid-template-columns: 1fr;
+        }
+
+        .checkout-form {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* High DPI screens */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .checkout-btn,
+        .btn-primary,
+        .btn-secondary {
+            -webkit-appearance: none;
+            border-radius: 8px;
+        }
+    }
+</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="checkout-header">
+            <h1>Complete Your Order</h1>
+            <p>Please fill in your details to complete your purchase</p>
+        </div>
+        
+        <div class="checkout-content">
+            <div class="checkout-form">
+                <form id="checkout-form">
+                    {% csrf_token %}
+                    
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullname" class="required">Full Name</label>
+                                <input type="text" id="fullname" name="fullname" required 
+                                       placeholder="Enter your full name">
+                                <div class="error">Please enter your full name</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="required">Email Address</label>
+                                <input type="email" id="email" name="email" required 
+                                       placeholder="your@email.com">
+                                <div class="error">Please enter a valid email address</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="required">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" required 
+                                       pattern="[0-9]{10}" maxlength="10"
+                                       placeholder="10-digit mobile number">
+                                <div class="error">Please enter a valid 10-digit phone number</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="alt-phone">Alternate Phone Number (Optional)</label>
+                                <input type="tel" id="alt-phone" name="alt-phone"
+                                       pattern="[0-9]{10}" maxlength="10"
+                                       placeholder="Optional alternate number">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping Address Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-truck"></i> Shipping Address</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="address" class="required">Street Address</label>
+                                <input type="text" id="address" name="address" required 
+                                       placeholder="House no., Street, Area">
+                                <div class="error">Please enter your street address</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city" class="required">City</label>
+                                <input type="text" id="city" name="city" required 
+                                       placeholder="Your city">
+                                <div class="error">Please enter your city</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="state" class="required">State</label>
+                                <select id="state" name="state" required>
+                                    <option value="">Select State</option>
+                                    {% for charge in shipping_charges %}
+                                    <option value="{{ charge.state_name }}">{{ charge.state_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="error">Please select your state</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pincode" class="required">PIN Code</label>
+                                <input type="text" id="pincode" name="pincode" required 
+                                       pattern="[0-9]{6}" maxlength="6"
+                                       placeholder="6-digit PIN code">
+                                <div class="error">Please enter a valid 6-digit PIN code</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="landmark">Landmark (Optional)</label>
+                                <input type="text" id="landmark" name="landmark"
+                                       placeholder="Near famous location">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                        <div class="form-group">
+                            <div class="payment-options">
+                                <div class="payment-method">
+                                    <input type="radio" id="cod" name="payment" value="cod" checked>
+                                    <label for="cod">
+                                        <i class="fas fa-money-bill-wave"></i> 
+                                        Cash on Delivery (50% Advance via UPI)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- QR Code Section -->
+                        <div id="qr-code-section" class="qr-section">
+                            <h4><i class="fas fa-qrcode"></i> Step 1: Pay 50% Advance via UPI</h4>
+                            
+                            <div class="qr-container">
+                                <div id="qr-code-placeholder" class="qr-placeholder" style="min-height: 200px; display: flex; align-items: center; justify-content: center;"></div>
+                            </div>
+                            
+                            <div class="amount-display">
+                                <p class="amount">Amount to Pay: <span id="qr-amount">₹0.00</span></p>
+                                <p class="instruction">Scan with any UPI app (Google Pay, PhonePe, Paytm)</p>
+                            </div>
+                            
+                            <!-- UTR Submission Form -->
+                            <div class="utr-form">
+                                <h5><i class="fas fa-receipt"></i> Step 2: Enter Transaction Details</h5>
+                                <p>After payment, enter your UTR/Transaction ID below:</p>
+                                <div class="utr-input-group">
+                                    <div class="utr-field">
+                                        <label for="manual-utr">UTR/Transaction ID *</label>
+                                        <input type="text" id="manual-utr" placeholder="Enter 12-digit UTR number" minlength="10">
+                                        <div class="error" id="utr-error" style="display: none;">Please enter a valid UTR number</div>
+                                    </div>
+                                </div>
+                                <p class="utr-note">
+                                    <i class="fas fa-info-circle"></i> UTR number is mandatory to place order
+                                </p>
+                            </div>
+                            
+                            <div class="payment-note">
+                                <i class="fas fa-info-circle"></i>
+                                Your order will be confirmed after payment verification.
+                            </div>
+                        </div>
+                        
+                        <div class="payment-info">
+                            <h4><i class="fas fa-info-circle"></i> Payment Instructions</h4>
+                            <ul>
+                                <li>Pay 50% advance via UPI using the QR code above</li>
+                                <li>Enter UTR/Transaction ID after payment</li>
+                                <li>Remaining 50% to be paid on delivery</li>
+                                <li>Order will be confirmed after payment verification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div class="summary-content">
+                    <div class="summary-row">
+                        <span>Subtotal ({{ item_count }} items)</span>
+                        <span id="subtotal-amount">₹{{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    
+                    {% if discount > 0 %}
+                    <div class="summary-row discount-row">
+                        <div>
+                            <span>Discount</span>
+                            <small>Applied</small>
+                        </div>
+                        <span class="discount-amount" id="discount-amount">-₹{{ discount|floatformat:2 }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span id="shipping-amount">Free</span>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="summary-row total-row">
+                        <span>Total Amount</span>
+                        <span id="total-amount">₹{{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    
+                    <div class="summary-row advance-amount">
+                        <span>Pay Now (50%)</span>
+                        <span id="advance-amount">₹0.00</span>
+                    </div>
+                    
+                    <div class="summary-row remaining-amount">
+                        <span>Pay on Delivery (50%)</span>
+                        <span id="remaining-amount">₹0.00</span>
+                    </div>
+                </div>
+                
+                <button class="checkout-btn" type="button" id="checkout-button">
+                    <i class="fa-solid fa-lock"></i> 
+                    <span class="btn-text">Place Order</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Processing...
+                    </span>
+                </button>
+                
+                <div class="payment-options-bottom">
+                    <span>We accept:</span>
+                    <div class="payment-icons">
+                        <i class="fa-brands fa-google-pay" title="Google Pay"></i>
+                        <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                        <i class="fa-solid fa-money-bill-wave" title="UPI"></i>
+                    </div>
+                </div>
+                
+                <div class="safety-badge">
+                    <i class="fa-solid fa-shield-alt"></i>
+                    <div>
+                        <h4>Secure Checkout</h4>
+                        <p>Your information is protected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<!-- Cloudflare QR Code library as fallback -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    window.checkoutManager = new CheckoutManager();
+});
+</script>
+<script>
+    class CheckoutManager {
+        constructor() {
+            this.subtotal = {{ subtotal }};
+            this.discount = {{ discount }};
+            this.shippingCharge = 0;
+            this.advanceAmount = 0;
+            this.isProcessing = false;
+            this.currentOrder = null;
+            this.qrCodeLibrary = 'primary';
+            
+            console.log('🔧 CheckoutManager initialized with:', {
+                subtotal: this.subtotal,
+                discount: this.discount
+            });
+            
+            this.initializeEventListeners();
+            this.updateOrderSummary();
+            this.generateQRCode();
+        }
+        
+        initializeEventListeners() {
+            // State change listener
+            const stateSelect = document.getElementById('state');
+            if (stateSelect) {
+                stateSelect.addEventListener('change', (e) => {
+                    this.updateShippingCharge(e.target.value);
+                });
+            }
+            
+            // Checkout button listener
+            const checkoutBtn = document.getElementById('checkout-button');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', () => {
+                    this.validateAndSubmit();
+                });
+            }
+            
+            // Form input validation
+            const inputs = document.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => this.validateField(input));
+            });
+
+            // UTR input validation
+            const utrInput = document.getElementById('manual-utr');
+            if (utrInput) {
+                utrInput.addEventListener('input', () => {
+                    document.getElementById('utr-error').style.display = 'none';
+                });
+            }
+        }
+        
+        async updateShippingCharge(state) {
+            if (!state) return;
+            
+            try {
+                console.log(`🔄 Fetching shipping charge for state: ${state}`);
+                const response = await fetch('/checkout/shipping-charge/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': this.getCSRFToken()
+                    },
+                    body: `state=${encodeURIComponent(state)}`
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📦 Shipping charge response:', data);
+                
+                if (data.success) {
+                    this.shippingCharge = data.shipping_charge;
+                    this.updateOrderSummary();
+                    this.generateQRCode();
+                    console.log(`✅ Shipping charge updated: ₹${this.shippingCharge}`);
+                } else {
+                    console.error('❌ Shipping charge error:', data.message);
+                    this.showError('Unable to fetch shipping charge. Please try again.');
+                }
+            } catch (error) {
+                console.error('❌ Error fetching shipping charge:', error);
+                this.showError('Unable to fetch shipping charge. Please try again.');
+            }
+        }
+        
+        updateOrderSummary() {
+            const total = this.subtotal - this.discount + this.shippingCharge;
+            this.advanceAmount = total * 0.5;
+            const remainingAmount = total * 0.5;
+            
+            console.log(`💰 Order summary - Subtotal: ${this.subtotal}, Discount: ${this.discount}, Shipping: ${this.shippingCharge}, Total: ${total}`);
+            
+            // Update DOM
+            const updateElement = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            
+            updateElement('subtotal-amount', `₹${this.subtotal.toFixed(2)}`);
+            updateElement('discount-amount', `-₹${this.discount.toFixed(2)}`);
+            updateElement('shipping-amount', this.shippingCharge > 0 ? `₹${this.shippingCharge.toFixed(2)}` : 'Free');
+            updateElement('total-amount', `₹${total.toFixed(2)}`);
+            updateElement('advance-amount', `₹${this.advanceAmount.toFixed(2)}`);
+            updateElement('remaining-amount', `₹${remainingAmount.toFixed(2)}`);
+        }
+        
+        generateQRCode() {
+            const amount = parseFloat(this.advanceAmount || 0);
+            const container = document.getElementById('qr-code-placeholder');
+            const amountText = document.getElementById('qr-amount');
+
+            if (!container || !amountText) {
+                console.error('❌ QR code container not found');
+                return;
+            }
+
+            // Display amount
+            amountText.textContent = `₹${amount.toFixed(2)}`;
+            console.log(`🎯 Generating QR code for amount: ₹${amount.toFixed(2)}`);
+
+            // Generate the UPI data string
+            const qrData = this.generateQRCodeData(amount);
+
+            // Clear previous QR code
+            container.innerHTML = '';
+
+            // Try primary library first, then fallback to Cloudflare
+            this.generateQRCodeWithFallback(container, qrData);
+        }
+
+        generateQRCodeWithFallback(container, qrData) {
+            if (window.QRCode && this.qrCodeLibrary === 'primary') {
+                this.generateWithPrimaryLibrary(container, qrData);
+            } else if (window.qrcode && this.qrCodeLibrary === 'cloudflare') {
+                this.generateWithCloudflareLibrary(container, qrData);
+            } else {
+                this.autoDetectAndGenerate(container, qrData);
+            }
+        }
+
+        generateWithPrimaryLibrary(container, qrData) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            container.appendChild(canvas);
+
+            QRCode.toCanvas(canvas, qrData, {
+                width: 200,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#ffffff'
+                }
+            }, (error) => {
+                if (error) {
+                    console.error('❌ Primary QR library error:', error);
+                    console.log('🔄 Switching to Cloudflare QR library...');
+                    this.qrCodeLibrary = 'cloudflare';
+                    container.innerHTML = '';
+                    this.generateQRCodeWithFallback(container, qrData);
+                } else {
+                    console.log('✅ QR Code generated with primary library');
+                }
+            });
+        }
+
+        generateWithCloudflareLibrary(container, qrData) {
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(qrData);
+                qr.make();
+                
+                const qrImage = qr.createImgTag(4, 0);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = qrImage;
+                const img = tempDiv.querySelector('img');
+                
+                if (img) {
+                    img.style.width = '200px';
+                    img.style.height = '200px';
+                    img.alt = 'UPI Payment QR Code';
+                    container.appendChild(img);
+                    console.log('✅ QR Code generated with Cloudflare library');
+                } else {
+                    throw new Error('Cloudflare library failed to generate image');
+                }
+            } catch (error) {
+                console.error('❌ Cloudflare QR library error:', error);
+                this.showQRCodeError(container, 'Both QR code libraries failed. Please refresh the page.');
+            }
+        }
+
+        autoDetectAndGenerate(container, qrData) {
+            if (window.QRCode) {
+                console.log('🔍 Auto-detected: Using primary QR code library');
+                this.qrCodeLibrary = 'primary';
+                this.generateWithPrimaryLibrary(container, qrData);
+            } else if (window.qrcode) {
+                console.log('🔍 Auto-detected: Using Cloudflare QR code library');
+                this.qrCodeLibrary = 'cloudflare';
+                this.generateWithCloudflareLibrary(container, qrData);
+            } else {
+                console.error('❌ No QR code library found');
+                this.showQRCodeError(container, 'QR code functionality not available. Please refresh the page.');
+            }
+        }
+
+        showQRCodeError(container, message) {
+            container.innerHTML = `
+                <div style="color: #e74c3c; padding: 20px; text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p style="font-size: 14px;">${message}</p>
+                    <button onclick="window.checkoutManager.regenerateQRCode()" 
+                            style="margin-top: 10px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                        Retry QR Code
+                    </button>
+                </div>
+            `;
+        }
+
+        regenerateQRCode() {
+            console.log('🔄 Manually regenerating QR code...');
+            this.generateQRCode();
+        }
+
+        generateQRCodeData(amount) {
+            const upiId = 'sahilraghav2004@ybl';
+            const merchantName = 'SahilStore';
+            const note = 'Order Payment';
+            const currency = 'INR';
+
+            const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(merchantName)}&am=${amount.toFixed(2)}&tn=${encodeURIComponent(note)}&cu=${currency}`;
+            console.log('🔗 Generated UPI URL:', upiUrl);
+            return upiUrl;
+        }
+        
+        validateField(field) {
+            const formGroup = field.closest('.form-group');
+            if (!formGroup) return true;
+            
+            formGroup.classList.remove('invalid');
+            
+            if (!field.value.trim()) {
+                formGroup.classList.add('invalid');
+                return false;
+            }
+            
+            if (field.type === 'email' && field.value.trim()) {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(field.value)) {
+                    formGroup.classList.add('invalid');
+                    return false;
+                }
+            }
+            
+            if (field.id === 'phone' && field.value.trim()) {
+                const phonePattern = /^[0-9]{10}$/;
+                if (!phonePattern.test(field.value.replace(/\D/g, ''))) {
+                    formGroup.classList.add('invalid');
+                    return false;
+                }
+            }
+            
+            if (field.id === 'pincode' && field.value.trim()) {
+                const pincodePattern = /^[0-9]{6}$/;
+                if (!pincodePattern.test(field.value)) {
+                    formGroup.classList.add('invalid');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        validateForm() {
+            const form = document.getElementById('checkout-form');
+            if (!form) {
+                console.error('❌ Checkout form not found');
+                return false;
+            }
+
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+            let firstInvalid = null;
+            
+            inputs.forEach(input => {
+                if (!this.validateField(input)) {
+                    isValid = false;
+                    if (!firstInvalid) firstInvalid = input;
+                }
+            });
+            
+            if (!isValid && firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            return isValid;
+        }
+        
+        async validateAndSubmit() {
+            if (this.isProcessing) {
+                console.log('⏳ Checkout already in progress...');
+                return;
+            }
+            
+            console.log('🔍 Validating form...');
+            
+            // Validate form first
+            if (!this.validateForm()) {
+                this.showError('Please fill all required fields correctly');
+                return;
+            }
+            
+            // Validate UTR
+            const utrInput = document.getElementById('manual-utr');
+            const utrNumber = utrInput ? utrInput.value.trim() : '';
+            
+            if (!utrNumber || utrNumber.length < 10) {
+                const utrError = document.getElementById('utr-error');
+                if (utrError) utrError.style.display = 'block';
+                if (utrInput) utrInput.focus();
+                this.showError('Please enter your UTR/Transaction ID (minimum 10 characters) after making the payment');
+                return;
+            }
+            
+            console.log('✅ Form validation passed, UTR:', utrNumber);
+            await this.processCheckout(utrNumber);
+        }
+        
+        async processCheckout(utrNumber) {
+            this.isProcessing = true;
+            const button = document.getElementById('checkout-button');
+            if (!button) {
+                console.error('❌ Checkout button not found');
+                this.isProcessing = false;
+                return;
+            }
+
+            const btnText = button.querySelector('.btn-text');
+            const btnLoading = button.querySelector('.btn-loading');
+            
+            if (btnText) btnText.style.display = 'none';
+            if (btnLoading) btnLoading.style.display = 'inline';
+            button.disabled = true;
+            
+            try {
+                const formData = new FormData(document.getElementById('checkout-form'));
+                const data = {
+                    full_name: formData.get('fullname')?.trim() || '',
+                    email: formData.get('email')?.trim() || '',
+                    phone: formData.get('phone')?.trim() || '',
+                    alt_phone: formData.get('alt-phone')?.trim() || '',
+                    address: formData.get('address')?.trim() || '',
+                    city: formData.get('city')?.trim() || '',
+                    state: formData.get('state') || '',
+                    pincode: formData.get('pincode')?.trim() || '',
+                    landmark: formData.get('landmark')?.trim() || '',
+                    payment_method: 'cod',
+                    utr_number: utrNumber
+                };
+                
+                console.log('📤 Submitting order data with UTR:', data);
+                
+                const orderResult = await this.createOrderWithRetry(data);
+                
+                if (orderResult.success) {
+                    this.currentOrder = orderResult;
+                    this.showSuccessAndRedirect(orderResult);
+                } else {
+                    // Show specific error message from server
+                    this.showError(orderResult.message || 'Failed to process order. Please try again.');
+                }
+            } catch (error) {
+                console.error('❌ Checkout error:', error);
+                this.showError('An unexpected error occurred. Please try again.');
+            } finally {
+                this.isProcessing = false;
+                if (btnText) btnText.style.display = 'inline';
+                if (btnLoading) btnLoading.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+
+        async createOrderWithRetry(data, maxRetries = 3) {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    console.log(`🔄 Creating order (attempt ${attempt}/${maxRetries})...`);
+                    
+                    const response = await fetch('/checkout/process/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': this.getCSRFToken()
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    console.log(`📨 Order response status: ${response.status}`);
+                    
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        // Handle 4xx errors (client errors)
+                        if (response.status >= 400 && response.status < 500) {
+                            return {
+                                success: false,
+                                message: result.message || 'Please check your information and try again.'
+                            };
+                        }
+                        // Handle 5xx errors (server errors)
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    console.log('✅ Order creation response:', result);
+                    return result;
+                    
+                } catch (error) {
+                    console.error(`❌ Order creation attempt ${attempt} failed:`, error);
+                    
+                    if (attempt === maxRetries) {
+                        return {
+                            success: false,
+                            message: 'Network error. Please check your connection and try again.'
+                        };
+                    }
+                    
+                    console.log(`⏳ Retrying in ${attempt * 1000}ms...`);
+                    await this.delay(attempt * 1000);
+                }
+            }
+        }
+
+        delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        showSuccessAndRedirect(orderResult) {
+            this.showSuccessMessage(
+                'Order placed successfully!', 
+                orderResult.order_number,
+                orderResult.advance_amount,
+                orderResult.remaining_amount
+            );
+            
+            // Redirect to homepage after 5 seconds
+            setTimeout(() => {
+                console.log('🔀 Redirecting to homepage...');
+                window.location.href = '/?order_success=true&order_number=' + orderResult.order_number;
+            }, 5000);
+        }
+
+        showSuccessMessage(message, orderNumber, advanceAmount, remainingAmount) {
+            const modal = document.createElement('div');
+            modal.className = 'success-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    text-align: center;
+                    max-width: 450px;
+                    width: 90%;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                ">
+                    <i class="fas fa-check-circle" style="color: #27ae60; font-size: 48px; margin-bottom: 15px;"></i>
+                    <h3 style="color: #2c3e50; margin-bottom: 10px; font-size: 1.3em;">${message}</h3>
+                    <p style="color: #7f8c8d; margin-bottom: 15px;">Redirecting to homepage in 5 seconds...</p>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                        <p style="margin: 8px 0; color: #2c3e50; font-size: 16px;">
+                            <strong>Order Number:</strong> ${orderNumber}
+                        </p>
+                        <p style="margin: 8px 0; color: #27ae60; font-size: 16px;">
+                            <strong>Advance Paid:</strong> ₹${parseFloat(advanceAmount).toFixed(2)}
+                        </p>
+                        <p style="margin: 8px 0; color: #e67e22; font-size: 16px;">
+                            <strong>Remaining Amount:</strong> ₹${parseFloat(remainingAmount).toFixed(2)}
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 12px; background: #e3f2fd; border-radius: 5px;">
+                        <p style="margin: 5px 0; color: #1976d2; font-size: 14px;">
+                            <i class="fas fa-info-circle"></i>
+                            Remaining amount to be paid on delivery
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button onclick="window.location.href='/'" 
+                                style="margin: 5px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                            Go Home Now
+                        </button>
+                        <button onclick="window.location.href='/order/confirmation/${orderNumber}/'" 
+                                style="margin: 5px; padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                            View Order Details
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Auto-remove modal after redirect would happen
+            setTimeout(() => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            }, 5000);
+        }
+        
+        showError(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #e74c3c;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10001;
+                max-width: 300px;
+            `;
+            
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 5000);
+        }
+        
+        getCSRFToken() {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+            return csrfToken ? csrfToken.value : '';
+        }
+    }
+    
+    // Initialize checkout manager when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 Initializing Checkout Manager...');
+        window.checkoutManager = new CheckoutManager();
+        console.log('✅ Checkout Manager initialized successfully');
+    });
+</script>
+</body>
+</html>

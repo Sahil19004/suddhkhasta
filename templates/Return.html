@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUDDKHASTA | Return Policy</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-cookie">
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <!-- Navigation Links -->
+      <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li>
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li>
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li>
+      </ul>
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Policy Main Content -->
+  <main class="policy-container">
+    <div class="policy-hero return-hero">
+      <div class="hero-content">
+        <h1>Return Policy</h1>
+        <p>Happiness guaranteed or your money back</p>
+        <div class="return-box">
+          <i class="fas fa-box-open"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="policy-content">
+      <div class="policy-card animated-card">
+        <div class="card-icon">
+          <i class="fas fa-undo"></i>
+        </div>
+        <h2>Our Return Promise</h2>
+        <div class="policy-details">
+          <p>We stand behind our cookies 100%. If you're not completely satisfied, we'll make it right with a replacement or refund.</p>
+          <div class="highlight-box">
+            <i class="fas fa-grin-hearts"></i>
+            <p>100% Happiness Guarantee</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="policy-card animated-card">
+        <div class="card-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <h2>Return Window</h2>
+        <div class="policy-details">
+          <p>You may return most items within 7 days of delivery for a full refund or exchange.</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <p>Contact us within 7 days</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <p>Provide order details</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <p>We'll arrange pickup</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="policy-card animated-card">
+        <div class="card-icon">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <h2>Non-Returnable Items</h2>
+        <div class="policy-details">
+          <p>For health and safety reasons, we cannot accept returns on:</p>
+          <ul class="exclusions">
+            <li><i class="fas fa-cookie"></i> Opened or partially consumed packages</li>
+            <li><i class="fas fa-gift"></i> Personalized or custom orders</li>
+            <li><i class="fas fa-calendar-times"></i> Perishable items past expiry</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="policy-card animated-card">
+        <div class="card-icon">
+          <i class="fas fa-exchange-alt"></i>
+        </div>
+        <h2>Refund Process</h2>
+        <div class="policy-details">
+          <p>Refunds are processed within 3-5 business days after we receive your return. The refund will be credited to your original payment method.</p>
+          <div class="refund-timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <p>Return received</p>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <p>Quality check</p>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <p>Refund initiated</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Same footer as shipping-policy.html -->
+
+    <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand">
+          <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+          </svg>
+          <span>Golden Crumb</span>
+        </div>
+        <p class="footer-text">Artisan cookies crafted with passion and premium ingredients.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <div class="links-column">
+          <h3 class="links-title">Shop</h3>
+          <ul>
+            <li><a href="Product.html">All Cookies</a></li>
+            <li><a href="#">Collections</a></li>
+            <li><a href="#">Gift Boxes</a></li>
+            <li><a href="#">Seasonal</a></li>
+            <li><a href="#">Corporate Gifting</a></li>
+          </ul>
+        </div>
+
+        <div class="links-column">
+          <h3 class="links-title">About</h3>
+          <ul>
+            <li><a href="About.html">Our Story</a></li>
+            <li><a href="#">Ingredients</a></li>
+            <li><a href="#">Baking Process</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+
+        <div class="links-column">
+          <h3 class="links-title">Help</h3>
+          <ul>
+            <li><a href="Contact.html">Contact Us</a></li>
+            <!-- <li><a href="#">FAQ</a></li> -->
+            <li><a href="Shipping.html">Shipping</a></li>
+            <li><a href="Return.html">Returns</a></li>
+            <li><a href="TrackOrder.html">Track Order</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-contact">
+        <h3 class="links-title">Visit Us</h3>
+        <address>
+          <p>SUDDKHASTA<br>
+          42 Artisan Lane, Bandra West<br>
+          Mumbai, Maharashtra 400050</p>
+          <p>Open: 10AM - 8PM Daily</p>
+          <p><a href="tel:+912266778899">+91 22 6677 8899</a></p>
+          <p><a href="mailto:hello@goldencrumb.com">hello@goldencrumb.com</a></p>
+        </address>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <p>&copy; 2023 Golden Crumb. All rights reserved.</p>
+        <div class="legal-links">
+          <a href="#">Privacy Policy</a>
+          <a href="TOS.html">Terms of Service</a>
+          <a href="Product.html">Cookie Policy</a>
+        </div>
+      </div>
+
+      <div class="payment-methods">
+        <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+        <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+        <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+        <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+        <i class="fa-brands fa-cc-apple-pay" aria-label="Apple Pay"></i>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUDDKHASTA | Terms of Service</title>
+  <meta name="description" content="Handcrafted premium cookies made with organic ingredients and traditional recipes. Experience cookie perfection with every bite.">
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" as="style">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="script.js" as="script">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body>
+  <!-- Floating cookie particles -->
+  <canvas id="cookie-canvas" aria-hidden="true"></canvas>
+
+  <!-- Preloader -->
+  <div class="preloader">
+    <div class="preloader-cookie">
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+      <div class="chips"></div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="nav-wrap">
+    <nav class="navbar" role="navigation" aria-label="Primary">
+      <!-- Brand Logo with SVG -->
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SUDDKHASTA</span>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+
+      <ul class="nav-links" role="menubar">
+        <li><a href="/" role="menuitem" data-text="Home">Home</a></li>
+        <li><a href="/#colection" role="menuitem" data-text="Collections">Collections</a></li>
+        <li><a href="{% url 'about' %}" role="menuitem" data-text="Our Story">About us</a></li>
+        <!-- <li><a href="#gifting" role="menuitem" data-text="Gifting">Gifting</a></li>
+        <li><a href="#visit" role="menuitem" data-text="Visit Us">Visit Us</a></li> -->
+        <li><a href="{% url 'orderpage' %}" role="menuitem" data-text="Collections">Orders</a></li>
+        <!-- <li><a href="TrackOrder.html" role="menuitem" data-text="Our Story">Track your order</a></li> -->
+        <!-- <li><a href="Return.html" role="menuitem" data-text="Gifting">Return Policy</a></li> -->
+        <!-- <li><a href="{% url 'shippingpol' %}" role="menuitem" data-text="Visit Us">Shipping Policy</a></li> -->
+        <li><a href="{% url 'contact' %}" role="menuitem" data-text="Our Story">Contact us</a></li>
+        <!-- <li><a href="{% url 'terms' %}" role="menuitem" data-text="Gifting">Terms of Service</a></li> -->
+      </ul>
+
+
+      <!-- Icons -->
+      <div class="icons">
+        <!-- <a href="#search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a> -->
+         {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}" aria-label="Account"><i class="fa-solid fa-right-from-bracket"></i></a>
+        {% else %}
+        <a href="{% url 'login' %}" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        {% endif %}
+        <a href="/cart" aria-label="Cart" class="cart-icon">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <span class="cart-count">{{cart_count|default:0}}</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Terms Hero Section -->
+<section class="terms-hero">
+  <div class="hero-content">
+    <h1>Terms of Service</h1>
+    <p>Last updated: October 2025</p>
+    <div class="scroll-down">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </div>
+</section>
+
+<!-- Terms Content -->
+<section class="terms-container">
+  <div class="terms-sidebar">
+    <div class="sidebar-sticky">
+      <h3>Table of Contents</h3>
+      <ul class="terms-nav">
+        <li><a href="#general" class="nav-link active">General</a></li>
+        <li><a href="#orders" class="nav-link">Orders & Payments</a></li>
+        <li><a href="#shipping" class="nav-link">Shipping & Delivery</a></li>
+        <li><a href="#returns" class="nav-link">Returns & Refunds</a></li>
+        <li><a href="#product" class="nav-link">Product Information</a></li>
+        <li><a href="#conduct" class="nav-link">User Conduct</a></li>
+        <li><a href="#intellectual" class="nav-link">Intellectual Property</a></li>
+        <li><a href="#liability" class="nav-link">Limitation of Liability</a></li>
+        <li><a href="#privacy" class="nav-link">Privacy</a></li>
+        <li><a href="#changes" class="nav-link">Changes to Terms</a></li>
+        <li><a href="#contact" class="nav-link">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="terms-content">
+    <article id="introduction" class="terms-article">
+      <h2>Welcome to SuddhKhasta</h2>
+      <p>These Terms of Service (“Terms”) govern your use of our website and the purchase of our products. By accessing or using our services, you agree to be bound by these Terms. Please read them carefully before placing an order or using our platform.</p>
+    </article>
+
+    <article id="general" class="terms-article">
+      <h2>1. General</h2>
+      <p>SuddhKhasta is dedicated to providing authentic, high-quality <strong>Thekua snacks</strong> that celebrate India’s culinary heritage. By placing an order through our website, you agree to comply with these Terms, along with all applicable laws and regulations.</p>
+    </article>
+
+    <article id="orders" class="terms-article">
+      <h2>2. Orders and Payment</h2>
+      <ul class="terms-list">
+        <li>All orders are subject to acceptance and availability.</li>
+        <li>Prices are listed in Indian Rupees (₹) and may change without prior notice.</li>
+        <li>Payment must be made in full at the time of purchase through accepted payment methods such as UPI, debit/credit cards, net banking, or wallets.</li>
+        <li>We reserve the right to refuse or cancel any order in case of product unavailability, pricing errors, or suspected fraudulent activity.</li>
+      </ul>
+    </article>
+
+    <article id="shipping" class="terms-article">
+      <h2>3. Shipping and Delivery</h2>
+      <ul class="terms-list">
+        <li>We strive to deliver your order within the estimated time frame provided during checkout.</li>
+        <li>Delivery times may vary depending on location, courier efficiency, and external factors.</li>
+        <li>Shipping charges, if applicable, will be clearly stated before payment confirmation.</li>
+        <li>Risk of loss and title for products pass to you upon successful delivery to the provided address.</li>
+      </ul>
+    </article>
+
+    <article id="returns" class="terms-article">
+      <h2>4. Returns and Refunds</h2>
+      <ul class="terms-list">
+        <li>Due to the perishable nature of our products, returns are accepted only if the product is defective or damaged upon delivery.</li>
+        <li>Please contact our support team within 24 hours of receiving your order to report any issue.</li>
+        <li>Refunds or replacements will be processed at our discretion after verifying the concern.</li>
+      </ul>
+    </article>
+
+    <article id="product" class="terms-article">
+      <h2>5. Product Information</h2>
+      <ul class="terms-list">
+        <li>We make every effort to ensure that all product descriptions, images, and details are accurate.</li>
+        <li>However, since our snacks are handcrafted, minor variations in color, shape, or texture may occur.</li>
+      </ul>
+    </article>
+
+    <article id="conduct" class="terms-article">
+      <h2>6. User Conduct</h2>
+      <ul class="terms-list">
+        <li>You agree not to use our website for any unlawful, harmful, or fraudulent activity.</li>
+        <li>You shall not attempt to interfere with the website’s security, performance, or functionality.</li>
+      </ul>
+    </article>
+
+    <article id="intellectual" class="terms-article">
+      <h2>7. Intellectual Property</h2>
+      <p>All content available on this website — including text, graphics, logos, images, product designs, and recipes — is the property of <strong>SuddhKhasta</strong> and protected under applicable copyright and trademark laws.</p>
+      <p>Unauthorized reproduction, modification, or distribution of our content without prior written permission is strictly prohibited.</p>
+    </article>
+
+    <article id="liability" class="terms-article">
+      <h2>8. Limitation of Liability</h2>
+      <ul class="terms-list">
+        <li>SuddhKhasta is not responsible for any indirect, incidental, or consequential damages arising from the use or inability to use our products or website.</li>
+        <li>Our maximum liability in any circumstance shall not exceed the total amount paid for the product(s) in question.</li>
+      </ul>
+    </article>
+
+    <article id="privacy" class="terms-article">
+      <h2>9. Privacy</h2>
+      <p>Your personal information is handled in accordance with our <a href="privacy.html">Privacy Policy</a>. By using our website, you consent to the collection and use of your information as described in that policy.</p>
+    </article>
+
+    <article id="changes" class="terms-article">
+      <h2>10. Changes to Terms</h2>
+      <p>We may update or modify these Terms of Service at any time without prior notice. Updates will be effective immediately upon posting to our website.</p>
+      <p>By continuing to use our website after such updates, you acknowledge and accept the revised Terms.</p>
+    </article>
+
+    <article id="contact" class="terms-article">
+      <h2>11. Contact Us</h2>
+      <p>If you have any questions or concerns regarding these Terms, please reach out to us:</p>
+      <div class="contact-methods">
+        <div class="contact-method">
+          <i class="fas fa-envelope"></i>
+          <span>suddhkhasta3@gmail.com</span>
+        </div>
+        <div class="contact-method">
+          <i class="fas fa-phone"></i>
+          <span>+91 9319677381</span>
+        </div>
+        <div class="contact-method">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>B-70 A, Lajpat Nagar, Shahibabad, Ghaziabad, U.P. 201005</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="terms-acceptance">
+      <p>By using our website and services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.</p>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Footer (same as other pages) -->
+ <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand Section -->
+    <div class="footer-brand">
+      <div class="brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
+        </svg>
+        <span>SuddhKhasta</span>
+      </div>
+      <p class="footer-text">
+        Pure. Authentic. Traditional.<br>
+        The taste of heritage in every bite.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <div class="links-column">
+        <h3 class="links-title">Shop</h3>
+        <ul>
+          <li><a href="{% url 'orderpage' %}">All Products</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Gift Boxes</a></li>
+          <li><a href="#">Festive Specials</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">About</h3>
+        <ul>
+          <li><a href="{% url 'about' %}">Our Story</a></li>
+          <li><a href="#">Our Craft</a></li>
+          <li><a href="#">Quality & Purity</a></li>
+          <li><a href="#">Sustainability</a></li>
+        </ul>
+      </div>
+
+      <div class="links-column">
+        <h3 class="links-title">Help</h3>
+        <ul>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="">Shipping Policy</a></li>
+          <li><a href="{% url 'shippingpol' %}">Return & Refund Policy</a></li>
+          <li><a href="">Track Order</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="footer-contact">
+      <h3 class="links-title">Reach Us</h3>
+      <address>
+        <p><strong>SuddhKhasta</strong><br>
+        B-70 A, Lajpat Nagar, Sahibabad<br>
+        Ghaziabad, U.P. 201005</p>
+        <p><strong>Open:</strong> 10AM – 8PM Daily</p>
+        <p><a href="tel:+919319677381">+91 9319677381</a></p>
+        <p><a href="mailto:suddhkhasta3@gmail.com">suddhkhasta3@gmail.com</a></p>
+      </address>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      <p>&copy; 2025 SuddhKhasta. All rights reserved.</p>
+      <div class="legal-links">
+        <a href="#">Privacy Policy</a>
+        <a href="{% url 'terms' %}">Terms of Service</a>
+        <a href="{% url 'shippingpol' %}">Shipping Policy</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <i class="fa-brands fa-cc-visa" aria-label="Visa"></i>
+      <i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i>
+      <i class="fa-brands fa-cc-amex" aria-label="American Express"></i>
+      <i class="fa-brands fa-cc-paypal" aria-label="PayPal"></i>
+      <i class="fa-brands fa-google-pay" aria-label="Google Pay"></i>
+    </div>
+  </div>
+</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="../static/js/script.js"></script>
+</body>
+</html>
