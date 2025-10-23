@@ -318,6 +318,85 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Mobile Hero Fixes */
+@media (max-width: 768px) {
+  .hero {
+    height: 60vh; /* Reduce height on mobile */
+    min-height: 400px; /* Set minimum height */
+  }
+
+  .hero-slide {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .hero-image {
+    background-size: contain; /* Show full image without cropping */
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .hero-content {
+    padding: 1rem;
+    bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.5rem; /* Smaller text */
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-controls {
+    bottom: 1rem; /* Move controls up */
+    padding: 0 1rem;
+  }
+
+  .hero-prev,
+  .hero-next {
+    width: 35px; /* Smaller buttons */
+    height: 35px;
+    font-size: 0.9rem;
+  }
+
+  .hero-pagination {
+    gap: 0.4rem;
+  }
+
+  .scroll-indicator {
+    display: none; /* Hide scroll indicator on mobile */
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    padding: 0.6rem 1.2rem; /* Smaller buttons */
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .hero {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .hero-slide {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .hero-title {
+    font-size: 1.2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.8rem;
+  }
+}
 </style>
   <!-- Styles -->
   <link rel="stylesheet" href="../static/css/style.css" />
