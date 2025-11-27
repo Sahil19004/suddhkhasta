@@ -321,70 +321,219 @@
         /* Mobile Hero Fixes */
 @media (max-width: 768px) {
   .hero {
-    height: 60vh; /* Reduce height on mobile */
-    min-height: 400px; /* Set minimum height */
+    height: 60vh;
+    min-height: 450px; /* Increased for better visibility */
+    max-height: 600px; /* Prevent excessive height on large tablets */
   }
 
   .hero-slide {
     height: 60vh;
+    min-height: 450px;
+  }
+
+  .hero-image {
+    background-size: cover; /* Better for mobile - fills container */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll; /* Disable parallax on mobile */
+  }
+
+  .hero-content {
+    padding: 1.5rem;
+    bottom: 2rem;
+    background: rgba(0, 0, 0, 0.3); /* Add semi-transparent overlay for text readability */
+    border-radius: 8px;
+    max-width: 90%;
+  }
+
+  .hero-title {
+    font-size: 1.75rem; /* Slightly larger than original */
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.8rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ensures readability */
+  }
+
+  .hero-subtitle {
+    font-size: 1rem; /* Better readability */
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-controls {
+    bottom: 1.5rem;
+    padding: 0 1rem;
+    gap: 1rem; /* Add gap between controls */
+  }
+
+  .hero-prev,
+  .hero-next {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    touch-action: manipulation; /* Better touch responsiveness */
+  }
+
+  .hero-prev:active,
+  .hero-next:active {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(0.95); /* Tactile feedback */
+  }
+
+  .hero-pagination {
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .hero-pagination .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .hero-pagination .dot.active {
+    background: #fff;
+    width: 28px;
+    border-radius: 5px;
+  }
+
+  .scroll-indicator {
+    display: none;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-height: 44px; /* Touch-friendly minimum */
+    min-width: 120px;
+  }
+
+  .cta-primary {
+    background: linear-gradient(135deg, #d4af37, #f0e68c);
+    color: #333;
+    border: none;
+  }
+
+  .cta-primary:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .cta-secondary {
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+  }
+
+  .cta-secondary:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Extra small devices (480px and below) */
+@media (max-width: 480px) {
+  .hero {
+    height: 55vh;
+    min-height: 400px;
+    max-height: 550px;
+  }
+
+  .hero-slide {
+    height: 55vh;
     min-height: 400px;
   }
 
   .hero-image {
-    background-size: contain; /* Show full image without cropping */
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
 
   .hero-content {
-    padding: 1rem;
-    bottom: 1rem;
+    padding: 1.25rem;
+    bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+    max-width: 95%;
   }
 
   .hero-title {
-    font-size: 1.5rem; /* Smaller text */
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.6rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .hero-subtitle {
     font-size: 0.9rem;
-    margin-bottom: 1rem;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   }
 
   .hero-controls {
-    bottom: 1rem; /* Move controls up */
-    padding: 0 1rem;
+    bottom: 1rem;
+    padding: 0 0.75rem;
+    gap: 0.75rem;
   }
 
   .hero-prev,
   .hero-next {
-    width: 35px; /* Smaller buttons */
-    height: 35px;
-    font-size: 0.9rem;
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.4);
   }
 
   .hero-pagination {
-    gap: 0.4rem;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
   }
 
-  .scroll-indicator {
-    display: none; /* Hide scroll indicator on mobile */
+  .hero-pagination .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .hero-pagination .dot.active {
+    width: 24px;
   }
 
   .cta-primary,
   .cta-secondary {
-    padding: 0.6rem 1.2rem; /* Smaller buttons */
-    font-size: 0.9rem;
+    padding: 0.65rem 1.2rem;
+    font-size: 0.95rem;
+    min-height: 42px;
+    min-width: 110px;
+  }
+
+  .scroll-indicator {
+    display: none;
   }
 }
 
-/* Extra small devices */
-@media (max-width: 480px) {
+/* Ultra small devices (320px - iPhone SE) */
+@media (max-width: 360px) {
   .hero {
-    height: 50vh;
-    min-height: 350px;
-  }
-
-  .hero-slide {
     height: 50vh;
     min-height: 350px;
   }
@@ -394,7 +543,15 @@
   }
 
   .hero-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-primary,
+  .cta-secondary {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    min-height: 40px;
   }
 }
 </style>
@@ -423,7 +580,7 @@
         <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 6.76 14.27 8 18 8c1.21 0 2.37-.21 3.44-.59-.38 3.29-2.89 5.86-6.03 6.67-.19.05-.39.08-.59.1-.2.02-.4.03-.6.03-.4 0-.8-.04-1.19-.12-1.33-.26-2.57-.83-3.61-1.67.5 2.39 1.93 4.46 3.99 5.79.33.21.69.38 1.06.52-.37.19-.76.35-1.16.48z"/>
         </svg>
-        <span>SUDDKHASTA</span>
+     <a href="/">   <span>SUDDKHASTA</span></a>
       </div>
 
       <!-- Mobile Menu Toggle -->
