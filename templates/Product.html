@@ -29,6 +29,41 @@
 
   <style>
     
+  .product-carousel {
+  display: flex;
+  gap: 20px;
+  padding: var(--space-md) 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  transition: transform 0.4s ease;
+}
+
+.product-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.product-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 280px; /* Set a fixed width */
+  margin: 0; /* Remove default margins */
+}
+
+/* Mobile: CRITICAL - allow scrolling */
+@media (max-width: 768px) {
+  .product-carousel {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    transform: none !important;
+  }
+  
+  .product-card {
+    width: 250px;
+  }
+}
+
     .add-to-cart-btn, .go-to-cart-btn {
    padding: 0 2rem;
     height: 40px;
@@ -731,7 +766,181 @@
     </div>
   </div>
 </footer>
-
+<script>
+  // ===== PRODUCT CAROUSEL =====
+  const productCarousel = document.querySelector('.product-carousel');
+  if (productCarousel) {
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    const products = Array.from(document.querySelectorAll('.product-card'));
+    
+    if (products.length > 0) {
+      let currentIndex = 0;
+      
+      // Check if device is mobile
+      function isMobile() {
+        return window.innerWidth <= 768;
+      }
+      
+      // Get card width including gap
+      function getCardWidth() {
+        const cardWidth = products[0].offsetWidth;
+        const carouselStyle = getComputedStyle(productCarousel);
+        const gap = parseInt(carouselStyle.gap || carouselStyle.columnGap || 0);
+        const marginRight = parseInt(getComputedStyle(products[0]).marginRight || 0);
+        return cardWidth + gap + marginRight;
+      }
+      
+      // Get total carousel width
+      function getTotalWidth() {
+        const cardWidth = products[0].offsetWidth;
+        const carouselStyle = getComputedStyle(productCarousel);
+        const gap = parseInt(carouselStyle.gap || carouselStyle.columnGap || 0);
+        return (cardWidth * products.length) + (gap * (products.length - 1));
+      }
+      
+      // Get container width
+      function getContainerWidth() {
+        return productCarousel.offsetWidth;
+      }
+      
+      // Check if scrolling is needed
+      function needsScrolling() {
+        return getTotalWidth() > getContainerWidth();
+      }
+      
+      // Get maximum scroll position
+      function getMaxScrollPosition() {
+        return Math.max(0, getTotalWidth() - getContainerWidth());
+      }
+      
+      // Get current scroll position
+      function getCurrentScrollPosition() {
+        return currentIndex * getCardWidth();
+      }
+      
+      // Update button states
+      function updateButtons() {
+        if (!isMobile() && needsScrolling()) {
+          const currentScroll = getCurrentScrollPosition();
+          const maxScroll = getMaxScrollPosition();
+          
+          if (prevBtn) {
+            prevBtn.disabled = currentScroll <= 0;
+            prevBtn.style.opacity = currentScroll <= 0 ? '0.5' : '1';
+            prevBtn.style.cursor = currentScroll <= 0 ? 'not-allowed' : 'pointer';
+          }
+          
+          if (nextBtn) {
+            nextBtn.disabled = currentScroll >= maxScroll;
+            nextBtn.style.opacity = currentScroll >= maxScroll ? '0.5' : '1';
+            nextBtn.style.cursor = currentScroll >= maxScroll ? 'not-allowed' : 'pointer';
+          }
+        }
+      }
+      
+      // Next product
+      function nextProduct() {
+        if (isMobile()) {
+          productCarousel.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
+        } else {
+          const currentScroll = getCurrentScrollPosition();
+          const maxScroll = getMaxScrollPosition();
+          
+          if (currentScroll < maxScroll) {
+            currentIndex++;
+            updateCarousel();
+          }
+        }
+      }
+      
+      // Previous product
+      function prevProduct() {
+        if (isMobile()) {
+          productCarousel.scrollBy({ left: -getCardWidth(), behavior: 'smooth' });
+        } else {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+          }
+        }
+      }
+      
+      // Update carousel position (desktop only)
+      function updateCarousel() {
+        if (!isMobile()) {
+          const maxScroll = getMaxScrollPosition();
+          const targetScroll = currentIndex * getCardWidth();
+          const actualScroll = Math.min(targetScroll, maxScroll);
+          
+          productCarousel.style.transform = `translateX(-${actualScroll}px)`;
+          updateButtons();
+        }
+      }
+      
+      // Event listeners for buttons
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          nextProduct();
+        });
+      }
+      
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          prevProduct();
+        });
+      }
+      
+      // Reset on window resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (isMobile()) {
+            productCarousel.style.transform = 'translateX(0)';
+            productCarousel.scrollLeft = 0;
+            currentIndex = 0;
+            if (prevBtn) prevBtn.style.display = '';
+            if (nextBtn) nextBtn.style.display = '';
+          } else {
+            const maxScroll = getMaxScrollPosition();
+            const currentScroll = getCurrentScrollPosition();
+            
+            if (currentScroll > maxScroll) {
+              currentIndex = Math.floor(maxScroll / getCardWidth());
+            }
+            
+            updateCarousel();
+            
+            if (!needsScrolling()) {
+              if (prevBtn) prevBtn.style.display = 'none';
+              if (nextBtn) nextBtn.style.display = 'none';
+            } else {
+              if (prevBtn) prevBtn.style.display = '';
+              if (nextBtn) nextBtn.style.display = '';
+            }
+          }
+        }, 150);
+      });
+      
+      // Initialize
+      if (isMobile()) {
+        productCarousel.style.transform = 'translateX(0)';
+        // Force reflow to ensure styles are applied
+        productCarousel.offsetHeight;
+      } else {
+        updateCarousel();
+        
+        if (!needsScrolling()) {
+          if (prevBtn) prevBtn.style.display = 'none';
+          if (nextBtn) nextBtn.style.display = 'none';
+        }
+      }
+    }
+  }
+</script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="../static/js/script.js"></script>

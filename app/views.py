@@ -612,6 +612,8 @@ def cart_remove_coupon(request):
         request.session['coupon_message'] = message
         return redirect('cart_detail')
 def contact(request):
+    cart=Cart(request)
+    cart_count=len(cart)
     if request.method=="POST":
         name=request.POST['name']
         email=request.POST['email']
@@ -624,13 +626,17 @@ def contact(request):
         # Redirect to avoid form resubmission on page refresh
         return redirect('contact')  # Replace 'contact' with your URL name
 
-    return render(request,'Contact.html')
+    return render(request,'Contact.html',{'cart_count':cart_count})
 
 def terms(request):
-    return render(request,"TOS.html")
+    cart=Cart(request)
+    cart_count=len(cart)
+    return render(request,"TOS.html",{'cart_count':cart_count})
 
 def shippingpol(request):
-    return render(request,"Shipping.html")
+    cart=Cart(request)
+    cart_count=len(cart)
+    return render(request,"Shipping.html",{'cart_count':cart_count})
 
 # app/views.py - add this debug view
 def cart_debug(request):
@@ -662,6 +668,8 @@ def cart_debug(request):
 @login_required
 def orderpage(request):
     # Get filter from request
+    cart=Cart(request)
+    cart_count=len(cart)
     filter_type = request.GET.get('filter', 'all')
     
     # Base queryset - only get orders for logged-in user
@@ -737,7 +745,8 @@ def orderpage(request):
     context = {
         'orders': orders_data,
         'current_filter': filter_type,
-        'filter_counts': filter_counts
+        'filter_counts': filter_counts,
+        'cart_count':cart_count
     }
     
     return render(request, "Order.html", context)
@@ -1110,4 +1119,6 @@ def track_order(request, tracking_id):
     
     return render(request, 'track_order.html', {'order': order})
 def about(request):
-    return render(request,"About.html")
+    cart=Cart(request)
+    cart_count=len(cart)
+    return render(request,"About.html",{'cart_count':cart_count})

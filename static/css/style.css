@@ -825,14 +825,14 @@ p {
 .featured-products {
   padding: var(--space-xxl) 0;
   position: relative;
-  overflow: hidden;
+  
 }
 
 .product-carousel {
   display: flex;
   gap: var(--space-lg);
   padding: var(--space-md) 0;
-  overflow-x: auto;
+
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -874,8 +874,7 @@ p {
 }
 
 .product-image {
-  height: 250px;
-  overflow: hidden;
+width: 100%;
 }
 
 .product-image img {
