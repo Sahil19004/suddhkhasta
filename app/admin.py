@@ -3,7 +3,7 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Userdetails)
-
+admin.site.register(Banner)
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'mrp', 'discount', 'quantity', 'badge']

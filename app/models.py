@@ -11,7 +11,10 @@ class Userdetails(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.user.email}"
-    
+class Banner(models.Model):
+    image1=models.ImageField(upload_to="gallery")
+    image2=models.ImageField(upload_to="gallery")
+    image3=models.ImageField(upload_to="gallery")
 class Product(models.Model):
     # Badge choices
     BADGE_CHOICES = [
