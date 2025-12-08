@@ -23,11 +23,22 @@ def indexpage(request):
  cart=Cart(request)
  cart_count=len(cart)
  products =Product.objects.all()
+ banner = Banner.objects.get(id=1)
+ image1 = banner.image1
+ image2 = banner.image2
+ image3 = banner.image3
+
+ print(image1,image2,image3)
+
  video=VideoFeedback.objects.all()
  context={
      'products':products,
      'video':video,
-     'cart_count':cart_count
+     'cart_count':cart_count,
+     'image1':image1,
+     'image2':image2,
+     'image3':image3
+
  } 
  print(context)
  return render(request,'index.html',context)

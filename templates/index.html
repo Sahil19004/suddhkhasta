@@ -12,7 +12,7 @@
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style">
   <link rel="preload" href="../static/css/style.css" as="style">
   <link rel="preload" href="../static/js/script.js" as="script">
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -355,239 +355,53 @@
             100% { transform: rotate(360deg); }
         }
         /* Mobile Hero Fixes */
+/* ===========================================
+   HERO SLIDER STYLES - COMPLETE FIX
+   =========================================== */
+
+/* ===========================================
+   HERO SLIDER STYLES - COMPLETE FIX
+   =========================================== */
+
+
+/* Animation for slide transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-slide.active .hero-content {
+  animation: fadeIn 1.5s ease-out;
+}
+
+/* Optional: Add some decorative elements */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to top, rgba(248, 243, 233, 1), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Ensure proper image loading */
+.hero-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Fix for mobile devices */
 @media (max-width: 768px) {
-  .hero {
-    height: 60vh;
-    min-height: 450px; /* Increased for better visibility */
-    max-height: 600px; /* Prevent excessive height on large tablets */
-  }
-
-  .hero-slide {
-    height: 60vh;
-    min-height: 450px;
-  }
-
   .hero-image {
-    background-size: cover; /* Better for mobile - fills container */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll; /* Disable parallax on mobile */
-  }
-
-  .hero-content {
-    padding: 1.5rem;
-    bottom: 2rem;
-    background: rgba(0, 0, 0, 0.3); /* Add semi-transparent overlay for text readability */
-    border-radius: 8px;
-    max-width: 90%;
-  }
-
-  .hero-title {
-    font-size: 1.75rem; /* Slightly larger than original */
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 0.8rem;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ensures readability */
-  }
-
-  .hero-subtitle {
-    font-size: 1rem; /* Better readability */
-    line-height: 1.4;
-    margin-bottom: 1.5rem;
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  .hero-controls {
-    bottom: 1.5rem;
-    padding: 0 1rem;
-    gap: 1rem; /* Add gap between controls */
-  }
-
-  .hero-prev,
-  .hero-next {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    touch-action: manipulation; /* Better touch responsiveness */
-  }
-
-  .hero-prev:active,
-  .hero-next:active {
-    background: rgba(0, 0, 0, 0.7);
-    transform: scale(0.95); /* Tactile feedback */
-  }
-
-  .hero-pagination {
-    gap: 0.6rem;
-    margin-top: 1rem;
-  }
-
-  .hero-pagination .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .hero-pagination .dot.active {
-    background: #fff;
-    width: 28px;
-    border-radius: 5px;
-  }
-
-  .scroll-indicator {
-    display: none;
-  }
-
-  .cta-primary,
-  .cta-secondary {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    min-height: 44px; /* Touch-friendly minimum */
-    min-width: 120px;
-  }
-
-  .cta-primary {
-    background: linear-gradient(135deg, #d4af37, #f0e68c);
-    color: #333;
-    border: none;
-  }
-
-  .cta-primary:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .cta-secondary {
-    background: transparent;
-    border: 2px solid #fff;
-    color: #fff;
-  }
-
-  .cta-secondary:active {
-    background: rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* Extra small devices (480px and below) */
-@media (max-width: 480px) {
-  .hero {
-    height: 55vh;
-    min-height: 400px;
-    max-height: 550px;
-  }
-
-  .hero-slide {
-    height: 55vh;
-    min-height: 400px;
-  }
-
-  .hero-image {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  .hero-content {
-    padding: 1.25rem;
-    bottom: 1.5rem;
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 6px;
-    max-width: 95%;
-  }
-
-  .hero-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 0.6rem;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  .hero-subtitle {
-    font-size: 0.9rem;
-    line-height: 1.3;
-    margin-bottom: 1.25rem;
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  }
-
-  .hero-controls {
-    bottom: 1rem;
-    padding: 0 0.75rem;
-    gap: 0.75rem;
-  }
-
-  .hero-prev,
-  .hero-next {
-    width: 36px;
-    height: 36px;
-    font-size: 0.95rem;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.4);
-  }
-
-  .hero-pagination {
-    gap: 0.5rem;
-    margin-top: 0.8rem;
-  }
-
-  .hero-pagination .dot {
-    width: 8px;
-    height: 8px;
-  }
-
-  .hero-pagination .dot.active {
-    width: 24px;
-  }
-
-  .cta-primary,
-  .cta-secondary {
-    padding: 0.65rem 1.2rem;
-    font-size: 0.95rem;
-    min-height: 42px;
-    min-width: 110px;
-  }
-
-  .scroll-indicator {
-    display: none;
-  }
-}
-
-/* Ultra small devices (320px - iPhone SE) */
-@media (max-width: 360px) {
-  .hero {
-    height: 50vh;
-    min-height: 350px;
-  }
-
-  .hero-title {
-    font-size: 1.2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  .cta-primary,
-  .cta-secondary {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    min-height: 40px;
+    /* On mobile, you might want to use cover for better appearance */
+    background-size: cover !important;
   }
 }
 </style>
@@ -657,66 +471,35 @@
       </button>
     </nav>
   </header>
-
+<br><br>
   <!-- ===== HERO SECTION ===== -->
-  <section id="home" class="hero">
-    <div class="hero-slides">
-      <!-- Slide 1 -->
-      <div class="hero-slide active">
-        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA.png')"></div>
-        <div class="hero-content">
-          <!-- <h1 class="hero-title">Artisan Cookie Craftsmanship</h1>
-          <p class="hero-subtitle">Handmade with premium ingredients and generations of baking wisdom</p> -->
-          <div class="hero-cta">
-            <!-- <a href="Product.html" class="cta-primary">Explore Collections</a>
-            <a href="#story" class="cta-secondary">Our Story <i class="fa-solid fa-arrow-right"></i></a> -->
-          </div>
-        </div>
-      </div>
-      
-      <!-- Slide 2 -->
-      <div class="hero-slide">
-        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA2.png')"></div>
-        <div class="hero-content">
-          <!-- <h1 class="hero-title">Seasonal Limited Editions</h1>
-          <p class="hero-subtitle">Discover our exclusive flavors available for a limited time only</p> -->
-          <div class="hero-cta">
-            <!-- <a href="Product.html" class="cta-primary">View Seasonal</a>
-            <a href="#gifting" class="cta-secondary">Gift Boxes <i class="fa-solid fa-arrow-right"></i></a> -->
-          </div>
-        </div>
-      </div>
-      
-      <!-- Slide 3 -->
-      <div class="hero-slide">
-        <div class="hero-image" style="background-image: url('../static/images/SUDDHKHASTA3.png')"></div>
-        <div class="hero-content">
-          <!-- <h1 class="hero-title">Perfect Pairings</h1>
-          <p class="hero-subtitle">Curated selections to complement your favorite beverages</p>
-          <div class="hero-cta">
-            <a href="#Product.html" class="cta-primary">Shop Pairings</a>
-            <a href="#visit" class="cta-secondary">Visit Our Café <i class="fa-solid fa-arrow-right"></i></a>
-          </div>
-        </div> -->
-      </div>
+  <section id="home" style="padding: 1%;" >
+    <div id="carouselExampleIndicators" class="carousel slide">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{{image1.url}}" class="d-block w-100" alt="...">
     </div>
-
-    <!-- Slide Controls -->
-    <div class="hero-controls">
-      <button class="hero-prev" aria-label="Previous Slide">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="hero-pagination"></div>
-      <button class="hero-next" aria-label="Next Slide">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
+    <div class="carousel-item">
+      <img src="{{image2.url}}" class="d-block w-100" alt="...">
     </div>
-
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
+    <div class="carousel-item">
+      <img src="{{image3.url}}" class="d-block w-100" alt="...">
     </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
   </section>
 
 
@@ -1243,7 +1026,7 @@
     }
   }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
