@@ -23,7 +23,7 @@ def indexpage(request):
  cart=Cart(request)
  cart_count=len(cart)
  products =Product.objects.all()
- banner = Banner.objects.get(id=1)
+ banner = Banner.objects.get(id=3)
  image1 = banner.image1
  image2 = banner.image2
  image3 = banner.image3
