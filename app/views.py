@@ -676,7 +676,7 @@ def cart_debug(request):
         debug_info['iteration_error'] = str(e)
     
     return JsonResponse(debug_info)
-@login_required
+
 def orderpage(request):
     # Get filter from request
     cart=Cart(request)
