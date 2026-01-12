@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .pending-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .pending-icon {
+            width: 80px;
+            height: 80px;
+            background: #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .pending-icon::after {
+            content: "⏳";
+            font-size: 50px;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .message {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background: #f59e0b;
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+    </style>
+    <script>
+        // Auto-refresh after 5 seconds
+        setTimeout(function() {
+            window.location.reload();
+        }, 5000);
+    </script>
+</head>
+<body>
+    <div class="pending-container">
+        <div class="pending-icon"></div>
+        <h1>Payment Processing</h1>
+        <p class="message">
+            Your payment is being processed. Please wait while we confirm your transaction.
+            This page will refresh automatically.
+        </p>
+        <a href="/" class="btn">Go to Home</a>
+    </div>
+</body>
+</html>

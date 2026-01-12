@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .failed-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .failed-icon {
+            width: 80px;
+            height: 80px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: shake 0.5s ease-out;
+        }
+        .failed-icon::after {
+            content: "✕";
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .order-number {
+            color: #ef4444;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .message {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .error-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #fecaca;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #666;
+        }
+        .detail-value {
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+        .help-text {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .help-text h3 {
+            margin-top: 0;
+            color: #1a1a1a;
+            font-size: 18px;
+        }
+        .help-text ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .help-text li {
+            color: #666;
+            margin: 8px 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+        .btn-secondary {
+            background: #f1f3f5;
+            color: #ef4444;
+        }
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="failed-container">
+        <div class="failed-icon"></div>
+        <h1>Payment Failed</h1>
+        <div class="order-number">Order #{{ order.order_number }}</div>
+        <p class="message">
+            Unfortunately, your payment could not be processed. Your order has been cancelled.
+            Don't worry, no amount has been deducted from your account.
+        </p>
+        
+        <div class="error-details">
+            <div class="detail-row">
+                <span class="detail-label">Order Number:</span>
+                <span class="detail-value">{{ order.order_number }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Status:</span>
+                <span class="detail-value">Payment Failed</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Amount:</span>
+                <span class="detail-value">₹{{ order.total_amount }}</span>
+            </div>
+        </div>
+        
+        <div class="help-text">
+            <h3>Why did this happen?</h3>
+            <ul>
+                <li>Insufficient balance in your account</li>
+                <li>Payment gateway timeout</li>
+                <li>Incorrect payment details</li>
+                <li>Bank server issues</li>
+            </ul>
+        </div>
+        
+        <div class="button-group">
+            <a href="/checkout/" class="btn btn-primary">Try Again</a>
+            <a href="/" class="btn btn-secondary">Go to Home</a>
+        </div>
+    </div>
+</body>
+</html>

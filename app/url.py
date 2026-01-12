@@ -20,13 +20,16 @@ path('contact/',views.contact,name='contact'),
 path('terms/',views.terms,name='terms'),
 path('checkout/', views.checkout, name='checkout'),
 path('checkout/process/', views.process_checkout, name='process_checkout'),
-path('checkout/submit-utr/', views.submit_utr, name='submit_utr'),
 path('checkout/shipping-charge/', views.get_shipping_charge, name='get_shipping_charge'),
 path('order/confirmation/<str:order_number>/', views.order_confirmation, name='order_confirmation'),
 path('order/track/<uuid:tracking_id>/', views.track_order, name='track_order'),
 path('shipping-policy/',views.shippingpol,name='shippingpol'),
 path('cart/debug/', views.cart_debug, name='cart_debug'),
 path('order-page/', views.orderpage, name='orderpage'),
+path('payment/callback/', views.payment_callback, name='payment_callback'),
+path('order/success/<uuid:tracking_id>/', views.order_success, name='order_success'),
+path('order/failed/<uuid:tracking_id>/', views.payment_failed, name='payment_failed'),
+    
 
  # Add this new URL for review submission
     path('product-detail/<int:myid>/submit-review/', views.submit_review, name='submit_review'),

@@ -4,7 +4,8 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User,auth
 import logging
 from decimal import Decimal
-from django.conf import settings
+# from django.conf import settings
+from suddhkhasta import settings
 from django.db.models import Avg, Count
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login
@@ -18,6 +19,9 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from .cart import Cart
 import re
+import requests
+
+
 logger = logging.getLogger('app')
 def indexpage(request):
  cart=Cart(request)
@@ -798,6 +802,7 @@ def get_payment_status_display(payment_status):
     return payment_status_map.get(payment_status, payment_status.title())
 logger = logging.getLogger(__name__)
 
+
 @ensure_csrf_cookie
 @login_required
 def checkout(request):
@@ -831,6 +836,46 @@ def checkout(request):
         logger.error(f"Error in checkout view: {str(e)}")
         return redirect('cart_detail')
 
+
+def create_cashfree_order(order_id, amount, customer_details):
+    """
+    Create Cashfree payment order
+    """
+    url = f"{settings.CASHFREE_API_URL}/orders"
+    
+    headers = {
+        "accept": "application/json",
+        "x-api-version": "2023-08-01",
+        "content-type": "application/json",
+        "x-client-id": settings.CASHFREE_APP_ID,
+        "x-client-secret": settings.CASHFREE_SECRET_KEY
+    }
+    
+    payload = {
+        "order_id": order_id,
+        "order_amount": float(amount),
+        "order_currency": "INR",
+        "customer_details": {
+            "customer_id": customer_details['customer_id'],
+            "customer_name": customer_details['customer_name'],
+            "customer_email": customer_details['customer_email'],
+            "customer_phone": customer_details['customer_phone']
+        },
+        "order_meta": {
+            "return_url": f"{settings.SITE_URL}/payment/callback/?order_id={{order_id}}"
+        },
+        "order_note": f"Payment for order {order_id}"
+    }
+    
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Cashfree API error: {str(e)}")
+        return None
+
+
 @require_POST
 @login_required
 @transaction.atomic
@@ -849,7 +894,7 @@ def process_checkout(request):
         logger.info(f"Processing checkout for user: {request.user.username}")
         
         # Validate required fields
-        required_fields = ['full_name', 'email', 'phone', 'address', 'city', 'state', 'pincode']
+        required_fields = ['full_name', 'email', 'phone', 'address', 'city', 'state', 'pincode', 'payment_method']
         missing_fields = [field for field in required_fields if not data.get(field)]
         
         if missing_fields:
@@ -881,13 +926,16 @@ def process_checkout(request):
         except ShippingCharge.DoesNotExist:
             shipping_charge = Decimal('0')
         
-        # Calculate totals - convert to float for JSON serialization
+        # Calculate totals
         subtotal = float(cart.get_subtotal_price())
         discount = float(getattr(cart, 'get_coupon_discount', lambda: Decimal('0'))())
         shipping_charge_float = float(shipping_charge)
         total_amount = subtotal - discount + shipping_charge_float
         
-        # Create order - use Decimal for database, float for calculations
+        # Get payment method
+        payment_method = data['payment_method']
+        
+        # Create order
         order = Order(
             user=request.user,
             full_name=data['full_name'].strip(),
@@ -899,11 +947,11 @@ def process_checkout(request):
             state=data['state'],
             pincode=pincode,
             landmark=data.get('landmark', '').strip(),
-            subtotal=Decimal(str(subtotal)),  # Convert back to Decimal for DB
+            subtotal=Decimal(str(subtotal)),
             shipping_charge=shipping_charge,
-            discount=Decimal(str(discount)),  # Convert back to Decimal for DB
-            total_amount=Decimal(str(total_amount)),  # Convert back to Decimal for DB
-            payment_method='cod',
+            discount=Decimal(str(discount)),
+            total_amount=Decimal(str(total_amount)),
+            payment_method=payment_method,
             payment_status='pending',
             status='pending'
         )
@@ -915,48 +963,92 @@ def process_checkout(request):
                 order=order,
                 product=item['product'],
                 quantity=item['quantity'],
-                price=item['price']  # This should already be Decimal from the model
+                price=item['price']
             )
         
-        # Create payment record for 50% advance
-        advance_amount = Decimal(str(total_amount)) * Decimal('0.5')
-        payment = Payment.objects.create(
-            order=order,
-            payment_id=f"PAY_{order.order_number}",
-            amount=advance_amount,
-            payment_method='upi',
-            status='pending',
-            transaction_id=''
-        )
+        # Handle payment based on method
+        if payment_method == 'cod':
+            # Cash on Delivery - No online payment needed
+            # Clear cart
+            cart_key = settings.CART_SESSION_ID
+            if cart_key in request.session:
+                del request.session[cart_key]
+            if 'coupon_id' in request.session:
+                del request.session['coupon_id']
+            request.session.modified = True
+            
+            logger.info(f"COD Order created successfully: {order.order_number}")
+            
+            return JsonResponse({
+                'success': True,
+                'order_number': order.order_number,
+                'tracking_id': str(order.tracking_id),
+                'total_amount': total_amount,
+                'payment_method': 'cod',
+                'redirect_url': f'/orders/{order.tracking_id}/'
+            })
+            
+        elif payment_method == 'online':
+            # Online Payment - Create Cashfree order for full amount
+            payment_amount = Decimal(str(total_amount))
+            
+            # Create payment record
+            payment = Payment.objects.create(
+                order=order,
+                payment_id=f"PAY_{order.order_number}",
+                amount=payment_amount,
+                payment_method='online',
+                status='pending',
+                transaction_id=''
+            )
+            
+            # Prepare customer details for Cashfree
+            customer_details = {
+                'customer_id': str(request.user.id),
+                'customer_name': data['full_name'].strip(),
+                'customer_email': data['email'].strip().lower(),
+                'customer_phone': phone
+            }
+            
+            # Create Cashfree order
+            cashfree_response = create_cashfree_order(
+                order_id=order.order_number,
+                amount=payment_amount,
+                customer_details=customer_details
+            )
+            
+            if cashfree_response and cashfree_response.get('payment_session_id'):
+                # Store payment session ID
+                payment.transaction_id = cashfree_response.get('payment_session_id', '')
+                payment.save()
+                
+                # Don't clear cart yet - will clear after successful payment
+                logger.info(f"Online Order created with Cashfree: {order.order_number}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'order_number': order.order_number,
+                    'tracking_id': str(order.tracking_id),
+                    'payment_amount': float(payment_amount),
+                    'total_amount': total_amount,
+                    'payment_method': 'online',
+                    'payment_session_id': cashfree_response['payment_session_id'],
+                    'order_id': order.order_number
+                })
+            else:
+                # Cashfree order creation failed
+                order.status = 'cancelled'
+                order.save()
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Unable to initiate payment. Please try again.'
+                }, status=500)
         
-        # Generate QR code data
-        qr_data = generate_upi_qr_data(float(advance_amount), order.order_number)
-        
-        # Clear cart - THIS IS THE KEY FIX!
-        # Remove the cart from session BEFORE returning JSON response
-        cart_key = settings.CART_SESSION_ID
-        if cart_key in request.session:
-            del request.session[cart_key]
-        
-        # Also clear coupon if exists
-        if 'coupon_id' in request.session:
-            del request.session['coupon_id']
-        
-        # Force session save to avoid Decimal serialization issues
-        request.session.modified = True
-        
-        logger.info(f"Order created successfully: {order.order_number}")
-        
-        return JsonResponse({
-            'success': True,
-            'order_number': order.order_number,
-            'tracking_id': str(order.tracking_id),
-            'advance_amount': float(advance_amount),  # Use float for JSON
-            'remaining_amount': float(Decimal(str(total_amount)) - advance_amount),
-            'total_amount': total_amount,  # This is already float
-            'qr_data': qr_data,
-            'payment_id': payment.payment_id
-        })
+        else:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid payment method'
+            }, status=400)
         
     except json.JSONDecodeError:
         return JsonResponse({
@@ -970,104 +1062,136 @@ def process_checkout(request):
             'message': 'Unable to process your order. Please try again.'
         }, status=500)
 
-def generate_upi_qr_data(amount, order_number):
-    """Generate UPI QR code payment URL"""
-    # IMPORTANT: Replace with your actual UPI details
-    upi_id = "sahilraghav2004@ybl"  # Use your actual UPI ID
-    merchant_name = "SahilStore"  # Replace with your store/business name
-    transaction_note = f"Advance payment for order {order_number}"
-    
-    # UPI URL format for QR codes
-    upi_url = (f"upi://pay?pa={upi_id}&pn={merchant_name}"
-               f"&am={amount:.2f}&tn={transaction_note}&cu=INR")
-    return upi_url
 
-
-@require_POST
-@login_required
-@transaction.atomic
-def submit_utr(request):
-    """Handle UTR submission for payment verification"""
+def payment_callback(request):
+    """
+    Handle Cashfree payment callback (GET request from redirect)
+    No @login_required as Cashfree redirects might lose session
+    """
     try:
-        data = json.loads(request.body)
-        order_number = data.get('order_number')
-        utr_number = data.get('utr_number', '').strip()
+        order_id = request.GET.get('order_id')
         
-        print(f"UTR Submission - Order: {order_number}, UTR: {utr_number}")  # Debug log
+        if not order_id:
+            logger.error("Payment callback: No order_id provided")
+            return redirect('cart_detail')
         
-        if not order_number or not utr_number:
-            return JsonResponse({
-                'success': False,
-                'message': 'Order number and UTR number are required'
-            }, status=400)
+        logger.info(f"Payment callback received for order: {order_id}")
         
-        if len(utr_number) < 10:
-            return JsonResponse({
-                'success': False,
-                'message': 'Please enter a valid UTR number (minimum 10 characters)'
-            }, status=400)
+        # Verify payment status with Cashfree
+        url = f"{settings.CASHFREE_API_URL}/orders/{order_id}"
         
-        # Get the order
-        try:
-            order = Order.objects.get(order_number=order_number, user=request.user)
-            print(f"Order found: {order.order_number}")  # Debug log
-        except Order.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'message': 'Order not found'
-            }, status=404)
-        
-        # Update payment record - get the specific payment for this order
-        try:
-            payment = Payment.objects.get(order=order, payment_method='upi')
-            print(f"Payment found: {payment.payment_id}, Current transaction_id: {payment.transaction_id}")  # Debug log
-        except Payment.DoesNotExist:
-            return JsonResponse({
-                'success': False,
-                'message': 'No UPI payment found for this order'
-            }, status=404)
-        
-        # Update the payment with UTR
-        payment.transaction_id = utr_number
-        payment.payment_details = {
-            'utr_number': utr_number,
-            'submitted_at': timezone.now().isoformat(),
-            'verified': False,
-            'payment_method': 'upi'
+        headers = {
+            "accept": "application/json",
+            "x-api-version": "2023-08-01",
+            "x-client-id": settings.CASHFREE_APP_ID,
+            "x-client-secret": settings.CASHFREE_SECRET_KEY
         }
-        payment.status = 'submitted'
-        payment.save()
         
-        print(f"Payment updated - Transaction ID: {payment.transaction_id}")  # Debug log
+        response = requests.get(url, headers=headers)
+        logger.info(f"Cashfree API response status: {response.status_code}")
         
-        # Update order status
-        order.payment_status = 'submitted'
-        order.save()
+        if response.status_code == 200:
+            payment_data = response.json()
+            order_status = payment_data.get('order_status')
+            
+            logger.info(f"Order status from Cashfree: {order_status}")
+            
+            # Get order from database
+            try:
+                order = Order.objects.get(order_number=order_id)
+                payment = Payment.objects.filter(order=order).first()
+                
+                if not payment:
+                    logger.error(f"Payment record not found for order: {order_id}")
+                    return redirect('cart_detail')
+                
+            except Order.DoesNotExist:
+                logger.error(f"Order not found in database: {order_id}")
+                return redirect('cart_detail')
+            
+            if order_status == 'PAID':
+                # Payment successful
+                order.payment_status = 'paid'
+                order.status = 'confirmed'
+                order.save()
+                
+                payment.status = 'completed'
+                payment.transaction_id = payment_data.get('cf_order_id', payment.transaction_id)
+                payment.save()
+                
+                # Clear cart after successful payment
+                cart_key = settings.CART_SESSION_ID
+                if cart_key in request.session:
+                    del request.session[cart_key]
+                if 'coupon_id' in request.session:
+                    del request.session['coupon_id']
+                request.session.modified = True
+                
+                logger.info(f"Payment successful for order: {order_id}")
+                return redirect('order_success', tracking_id=order.tracking_id)
+                
+            elif order_status == 'ACTIVE':
+                # Payment is still pending/processing
+                logger.info(f"Payment still active for order: {order_id}")
+                return render(request, 'payment_pending.html', {'order': order})
+                
+            else:
+                # Payment failed or cancelled
+                order.payment_status = 'failed'
+                order.status = 'cancelled'
+                order.save()
+                
+                payment.status = 'failed'
+                payment.save()
+                
+                logger.warning(f"Payment failed for order: {order_id}. Status: {order_status}")
+                return redirect('payment_failed', tracking_id=order.tracking_id)
         
-        logger.info(f"UTR submitted for order: {order_number}, UTR: {utr_number}")
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Payment proof submitted successfully! Your order will be confirmed after verification.',
-            'order_number': order.order_number,
-            'utr_number': utr_number
-        })
-        
-    except json.JSONDecodeError as e:
-        print(f"JSON Decode Error: {e}")  # Debug log
-        return JsonResponse({
-            'success': False,
-            'message': 'Invalid data format'
-        }, status=400)
+        else:
+            logger.error(f"Failed to verify payment. Status code: {response.status_code}, Response: {response.text}")
+            # Try to find the order anyway
+            try:
+                order = Order.objects.get(order_number=order_id)
+                return redirect('payment_failed', tracking_id=order.tracking_id)
+            except Order.DoesNotExist:
+                return redirect('cart_detail')
+            
     except Exception as e:
-        print(f"UTR Submission Error: {e}")  # Debug log
-        logger.error(f"Error submitting UTR: {str(e)}", exc_info=True)
-        return JsonResponse({
-            'success': False,
-            'message': 'Error submitting payment proof. Please try again.'
-        }, status=500)
+        logger.error(f"Error in payment callback: {str(e)}", exc_info=True)
+        # Try to redirect to a safe page
+        try:
+            if order_id:
+                order = Order.objects.get(order_number=order_id)
+                return redirect('payment_failed', tracking_id=order.tracking_id)
+        except:
+            pass
+        return redirect('cart_detail')
 
 
+@login_required
+def order_success(request, tracking_id):
+    """
+    Order success page
+    """
+    try:
+        order = Order.objects.get(tracking_id=tracking_id, user=request.user)
+        return render(request, 'order_success.html', {'order': order})
+    except Order.DoesNotExist:
+        return redirect('cart_detail')
+
+
+@login_required
+def payment_failed(request, tracking_id):
+    """
+    Payment failed page
+    """
+    try:
+        order = Order.objects.get(tracking_id=tracking_id, user=request.user)
+        return render(request, 'payment_failed.html', {'order': order})
+    except Order.DoesNotExist:
+        return redirect('cart_detail')
+    
+    
 @require_POST
 def get_shipping_charge(request):
     """Get shipping charge for selected state"""
