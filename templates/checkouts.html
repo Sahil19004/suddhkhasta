@@ -634,7 +634,7 @@
         let cashfree;
         const initializeCashfree = async () => {
             cashfree = await Cashfree({
-                mode: "{{ CASHFREE_MODE|default:'sandbox' }}" // 'sandbox' or 'production'
+                mode: "{{ CASHFREE_MODE|default:'production' }}" // 'sandbox' or 'production'
             });
         };
         initializeCashfree();
