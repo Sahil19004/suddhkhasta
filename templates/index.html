@@ -404,6 +404,36 @@
     background-size: cover !important;
   }
 }
+  /* Mobile Responsive Styles */
+  @media (max-width: 1200px) {
+    .product-card {
+      flex: 1 1 calc(33.333% - 24px) !important;
+      max-width: calc(33.333% - 24px) !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .product-carousel {
+      gap: 16px !important;
+    }
+    .product-card {
+      flex: 1 1 calc(50% - 16px) !important;
+      max-width: calc(50% - 16px) !important;
+      min-width: 150px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-card {
+      flex: 1 1 100% !important;
+      max-width: 100% !important;
+    }
+  }
+
+  /* Hide carousel controls */
+  .carousel-controls {
+    display: none;
+  }
 </style>
   <!-- Styles -->
   <link rel="stylesheet" href="../static/css/style.css" />
@@ -505,51 +535,81 @@
 
 
   <!-- ===== FEATURED PRODUCTS ===== -->
-  <section class="featured-products container" id="colection">
-    <div class="section-header" style="margin-top: 33px;">
-      <h2 class="section-title">Our Products</h2>
-      <p class="section-subtitle">Customer favorites that never disappoint</p>
-    </div>
+<section class="featured-products container" id="colection">
+  <div class="section-header" style="margin-top:33px;">
+    <h2 class="section-title">Our Products</h2>
+    <p class="section-subtitle">Customer favorites that never disappoint</p>
+  </div>
 
-    <div class="product-carousel">
-      <!-- Product 1 -->
+  <div class="product-carousel" style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 40px 0;
+  ">
+
     {% for i in products %}
-      <div class="product-card">
-        <div class="product-badge">{{i.badge}}</div>
-      <a href="/product-detail/{{i.id}}" style="cursor: pointer;">  <div class="product-image">
-          <img src="{{i.image1.url}}" alt="Salted Caramel Cookie" loading="lazy">
-        </div>
-        </a>
-        <div class="product-content">
-          <h3 class="product-name">{{i.name}}</h3>
-          <p class="product-desc">{{i.description|truncatechars:100}} <a href="" style="text-decoration: underline;color:  var(--primary);">read more</a></p>
+    <div class="product-card" style="
+      flex: 1 1 calc(25% - 24px);
+      min-width: 250px;
+      max-width: calc(25% - 24px);
+    ">
 
-       
-          <div class="product-price">
-            <span class="current-price">₹{{i.price}}</span>
-            <span class="original-price">₹{{i.mrp}}</span>
-          </div>
-          <a href="/product-detail/{{i.id}}" class="add-to-cart1" style="cursor:pointer;">
-            <i class="fa-solid fa-plus"></i> Add to Cart
+      <div class="product-badge">{{ i.badge }}</div>
+
+      <!-- IMAGE CONTAINER -->
+      <a href="/product-detail/{{ i.id }}" style="cursor:pointer;">
+        <div class="img-cover-box"
+             style="
+               width:100%;
+               height:240px;
+               overflow:hidden;
+               border-radius:14px;
+               position:relative;
+               background:#eee;
+             ">
+          <img src="{{ i.image1.url }}"
+               alt="{{ i.name }}"
+               loading="lazy"
+               style="
+                 width:100%;
+                 height:100%;
+                 object-fit:contain;
+                 object-position:center;
+                 display:block;
+               ">
+        </div>
+      </a>
+
+      <!-- PRODUCT DETAILS -->
+      <div class="product-content">
+        <h3 class="product-name">{{ i.name }}</h3>
+
+        <p class="product-desc">
+          {{ i.description|truncatechars:100 }}
+          <a href="/product-detail/{{ i.id }}"
+             style="text-decoration:underline;color:var(--primary);">
+            read more
           </a>
+        </p>
+
+        <div class="product-price">
+          <span class="current-price">₹{{ i.price }}</span>
+          <span class="original-price">₹{{ i.mrp }}</span>
         </div>
+
+        <a href="/product-detail/{{ i.id }}"
+           class="add-to-cart1"
+           style="cursor:pointer;">
+          <i class="fa-solid fa-plus"></i> Add to Cart
+        </a>
+
       </div>
-      {% endfor %}
-      
-      <!-- Product 2 -->
-   
     </div>
+    {% endfor %}
 
-    <div class="carousel-controls">
-      <button class="carousel-prev" aria-label="Previous Product">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <button class="carousel-next" aria-label="Next Product">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
-  </section>
-
+  </div>
+</section>
 
 
   <!-- ===== TESTIMONIALS ===== -->
